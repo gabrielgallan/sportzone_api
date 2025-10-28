@@ -1,0 +1,9 @@
+services:
+  ignite_node_01:
+    image: bitnami/postgresql
+    ports:
+      - 5430:5432
+    environment:
+      - POSTGRES_USERNAME=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DATABASE=ignite_node_01
