@@ -5,6 +5,7 @@ const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     PORT: z.coerce.number().default(3000),
     DATABASE_URL: z.string(),
+    GEOCODING_API_URL: z.string()
 })
 
 const _env = envSchema.safeParse(process.env)

@@ -1,12 +1,8 @@
 import fastify from 'fastify'
-import prisma from './lib/prisma.ts'
+import { appRoutes } from './http/routes.ts'
 
 const app = fastify()
 
-app.get('/', async (request, reply) => {
-    const users = await prisma.user.findMany()
-
-    return reply.status(200).send({ users })
-})
+await app.register(appRoutes)
 
 export default app
