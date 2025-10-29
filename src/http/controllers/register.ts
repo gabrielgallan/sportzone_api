@@ -1,30 +1,28 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { PrismaUsersRepository } from "root/src/repositories/prisma/prisma-users-repository.ts";
-import { UserWithSameEmailError } from "root/src/use-cases/errors/user-with-same-email.ts";
-import { RegisterUseCase } from "root/src/use-cases/register.ts";
+import { UserAlreadyExistsError } from "root/src/use-cases/errors/user-already-exists.ts";
+import { makeRegisterUseCase } from "root/src/use-cases/factories/make-register-use-case.ts";
 import z from "zod";
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
         name: z.string(),
         email: z.string().email(),
-        password: z.string()
+        password: z.string().min(6)
     })
-
+    
     const { name, email, password } = bodySchema.parse(request.body)
-
+    
     try {
-        const usersRepository = new PrismaUsersRepository()
-        const registerUseCase = new RegisterUseCase(usersRepository)
+        const registerUseCase = makeRegisterUseCase()
 
-        const user = registerUseCase.execute({ name, email, password })
+        const user = await registerUseCase.execute({ name, email, password })
 
         return reply.status(201).send()
     } catch (err) {
-        if (err instanceof UserWithSameEmailError) {
+        if (err instanceof UserAlreadyExistsError) {
             return reply.status(409).send({ error: err.message })    
         }
 
-        return reply.status(500).send({ error: 'Internal Server Error!' })
+        throw err
     }
 }
