@@ -1,7 +1,6 @@
 import { it, describe, expect, beforeEach } from 'vitest'
 import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository.ts'
 import { AuthenticateUseCase } from './authenticate.ts'
-import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error.ts'
 import type { UsersRepository } from '../repositories/users-repository.ts'
 import { hash } from 'bcryptjs'
@@ -9,7 +8,7 @@ import { hash } from 'bcryptjs'
 let usersRepository: UsersRepository
 let sut: AuthenticateUseCase
 
-describe('Register Use Case', () => {
+describe('Authenticate Use Case', () => {
     beforeEach(() => {
         usersRepository = new InMemoryUsersRepository()
         sut = new AuthenticateUseCase(usersRepository)

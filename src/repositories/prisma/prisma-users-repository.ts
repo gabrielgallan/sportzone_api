@@ -4,6 +4,14 @@ import type { UsersRepository } from "../users-repository.ts";
 
 
 export class PrismaUsersRepository implements UsersRepository {
+    async findByUserId(id: string) {
+        const user = await prisma.user.findUnique({
+            where: { id }
+        })
+
+        return user
+    }
+
     async create({ name, email, password_hash }: Prisma.UserCreateInput): Promise<User> {
         const user = await prisma.user.create({
             data: {
