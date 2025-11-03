@@ -1,8 +1,8 @@
 import { it, describe, expect, beforeEach } from 'vitest'
-import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository.ts'
-import { GetProfileUseCase } from './get-profile.ts'
-import { ResourceNotFound } from './errors/resource-not-found.ts'
-import type { UsersRepository } from '../repositories/users-repository.ts'
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository.ts'
+import { GetProfileUseCase } from '../get-profile.ts'
+import { ResourceNotFound } from '../errors/resource-not-found.ts'
+import type { UsersRepository } from '@/repositories/users-repository.ts'
 import { hash } from 'bcryptjs'
 import { randomUUID } from 'crypto'
 

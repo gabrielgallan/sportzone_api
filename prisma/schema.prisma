@@ -30,6 +30,7 @@ model Booking {
   start_time DateTime
   end_time   DateTime
   created_at DateTime @default(now())
+  status     String   @default("confirmed")
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String
@@ -37,20 +38,51 @@ model Booking {
   sportCourt    SportCourt @relation(fields: [sportCourt_id], references: [id])
   sportCourt_id String
 
+  //  payment    Payment @relation(fields: [payment_id], references: [id])
+  //  payment_id String  @unique
+
   @@map("bookings")
+}
+
+model Payment {
+  id           String    @id @default(uuid())
+  method       String
+  external_id  String
+  amount       Decimal
+  created_at   DateTime  @default(now())
+  validated_at DateTime?
+
+  //  booking Booking?
+
+  @@map("payments")
 }
 
 model SportCourt {
   id             String  @id @default(uuid())
   title          String
+  type           String
   description    String?
   phone          String?
   location       String
   latitude       Float
   longitude      Float
+  is_active      Boolean @default(true)
   price_per_hour Decimal
 
-  bookings Booking[]
+  bookings            Booking[]
+  court_blocked_times CourtBlockedTimes[]
 
   @@map("sport_courts")
+}
+
+model CourtBlockedTimes {
+  id         String   @id @default(uuid())
+  start_time DateTime
+  end_time   DateTime
+  reason     String?
+
+  sportCourt    SportCourt @relation(fields: [sportCourt_id], references: [id])
+  sportCourt_id String
+
+  @@map("court_blocked_times")
 }

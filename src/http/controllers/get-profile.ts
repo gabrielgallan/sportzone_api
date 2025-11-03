@@ -14,9 +14,9 @@ export async function getProfile(request: FastifyRequest, reply: FastifyReply) {
     try {
         const getUserProfile = makeGetProfileUseCase()
 
-        const response = await getUserProfile.execute({ userId })
+        const { user } = await getUserProfile.execute({ userId })
 
-        return reply.status(200).send({ user: response.user })
+        return reply.status(200).send({ user })
     } catch (err) {
         if (err instanceof ResourceNotFound) {
             return reply.status(404).send({ error: err.message })    
