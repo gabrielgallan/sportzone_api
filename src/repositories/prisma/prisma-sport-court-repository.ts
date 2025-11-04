@@ -4,8 +4,12 @@ import type { SportCourtsRepository } from "../sport-courts-repository.ts"
 
 
 export class PrismaSportCourtsRepository implements SportCourtsRepository {
-    create(data: Prisma.SportCourtCreateInput): Promise<SportCourt> {
-        throw new Error("Method not implemented.")
+    async create(data: Prisma.SportCourtCreateInput): Promise<SportCourt> {
+        const sportCourt = await prisma.sportCourt.create({
+            data
+        })
+
+        return sportCourt
     }
 
     async findById(id: string) {

@@ -1,25 +1,21 @@
 import { Prisma, type SportCourt } from "@prisma/client"
 import type { SportCourtsRepository } from "../sport-courts-repository.ts"
 import { randomUUID } from "crypto"
-import { Decimal } from "@prisma/client/runtime/library"
-
 
 export class InMemorySportCourtsRepository implements SportCourtsRepository {
     private items: SportCourt[] = []
 
     async create(data: Prisma.SportCourtCreateInput) {
-        const { title, type, location, latitude, longitude, price_per_hour } = data
         const sportCourt = {
-            id: randomUUID(),
-            title,
-            type,
-            description: null,
+            id: data.id ?? randomUUID(),
+            title: data.title,
+            type: data.type,
             is_active: true,
-            phone: null,
-            location,
-            latitude,
-            longitude,
-            price_per_hour: new Prisma.Decimal(String(price_per_hour))
+            phone: data.phone ?? '',
+            location: data.location,
+            latitude: new Prisma.Decimal(data.latitude.toString()),
+            longitude: new Prisma.Decimal(data.longitude.toString()),
+            price_per_hour: new Prisma.Decimal(data.price_per_hour.toString())
         }
 
         this.items.push(sportCourt)

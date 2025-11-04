@@ -18,7 +18,7 @@ export class InMemoryUsersRepository implements UsersRepository {
         const { name, email, password_hash } = data
 
         const user = {
-            id: randomUUID(),
+            id: data.id ?? randomUUID(),
             name,
             email,
             password_hash,

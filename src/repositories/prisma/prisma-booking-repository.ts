@@ -1,19 +1,24 @@
 import type { Prisma, Booking } from "@prisma/client"
 import type { BookingsRepository } from "../bookings-repository.ts";
 import prisma from "root/src/lib/prisma.ts";
+import dayjs from "dayjs";
 
 
 export class PrismaBookingsRepository implements BookingsRepository {
-    async findBySportCourtIdOnDates(sportCourt_id: string, startDate: Date, endDate: Date) {
+    async findManyByUserId(userId: string) {
+        const userBookings = await prisma.booking.findMany({
+            where: { user_id: userId }
+        })
+
+        return userBookings
+    }
+    
+    async findBySportCourtIdOnInterval(sportCourtId: string, startTime: Date, endTime: Date) {
         const conflictingBooking = await prisma.booking.findFirst({
             where: {
-                sportCourt_id: sportCourt_id,
-                OR: [
-                    {
-                        start_time: { lt: endDate },
-                        end_time: { gt: startDate }
-                    }
-                ]
+                sportCourt_id: sportCourtId,
+                start_time: { lt: endTime },
+                end_time: { gt: startTime }
             }
         })
 
@@ -21,10 +26,16 @@ export class PrismaBookingsRepository implements BookingsRepository {
     }
 
     async findByUserIdOnDate(userId: string, date: Date) {
+        const startOfDay = dayjs(date).startOf("day").toDate()
+        const endOfDay = dayjs(date).endOf("day").toDate()
+
         const booking = await prisma.booking.findFirst({
             where: {
                 user_id: userId,
-                created_at: date
+                created_at: {
+                    gte: startOfDay,
+                    lte: endOfDay
+                }
             }
         })
 

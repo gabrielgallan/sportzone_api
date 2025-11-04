@@ -7,16 +7,22 @@ import dayjs from "dayjs"
 export class InMemoryBookingsRepository implements BookingsRepository {
     private items: Booking[] = []
 
-    async findBySportCourtIdOnDates(sporCourt_id: string, startDate: Date, endDate: Date) {
-        const bookingInConflict = this.items.find(b =>
+    async findManyByUserId(userId: string) {
+        const userBookings = this.items.filter(b => b.user_id === userId)
+
+        return userBookings
+    }
+
+    async findBySportCourtIdOnInterval(sporCourt_id: string, startDate: Date, endDate: Date) {
+        const bookingInTheSameInterval = this.items.find(b =>
             b.sportCourt_id === sporCourt_id &&
             b.start_time < endDate &&
             b.end_time > startDate
         )
 
-        if (!bookingInConflict) return null
+        if (!bookingInTheSameInterval) return null
 
-        return bookingInConflict
+        return bookingInTheSameInterval
     }
 
     async findByUserIdOnDate(userId: string, date: Date) {
@@ -37,18 +43,13 @@ export class InMemoryBookingsRepository implements BookingsRepository {
     }
 
     async create(data: Prisma.BookingUncheckedCreateInput): Promise<Booking> {
-        let { start_time, end_time, sportCourt_id, user_id } = data
-
-        start_time = new Date(start_time)
-        end_time = new Date(end_time)
-
         const booking = {
-            id: randomUUID(),
-            start_time,
-            end_time,
-            sportCourt_id,
-            user_id,
-            status: 'confirmed',
+            id: data.id ?? randomUUID(),
+            start_time: new Date(data.start_time),
+            end_time: new Date(data.end_time),
+            sportCourt_id: data.sportCourt_id,
+            user_id: data.user_id,
+            status: 'pending',
             created_at: new Date()
         }
 

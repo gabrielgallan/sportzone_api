@@ -2,15 +2,16 @@ import type { Booking } from "@prisma/client"
 import type { BookingsRepository } from "../repositories/bookings-repository.ts"
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts"
 import { ResourceNotFound } from "./errors/resource-not-found.ts"
-import { BookingOnSameDate } from "./errors/booking-on-same-date.ts"
+import { MaxBookingsPerDayError } from "./errors/max-bookings-per-day-error.ts"
 import { SportCourtDateUnavaliable } from "./errors/sport-courts-date-unavaliable.ts"
 import dayjs from "dayjs"
+import { InvalidTimestampBookingInterval } from "./errors/invalid-timestamp-booking-interval.ts"
 
 interface CreateBookingUseCaseRequest {
-    user_id: string,
-    sportCourt_id: string,
-    start_time: Date,
-    end_time: Date
+    userId: string,
+    sportCourtId: string,
+    startTime: Date,
+    endTime: Date
 }
 
 interface CreateBookingUseCaseResponse {
@@ -23,69 +24,69 @@ export class CreateBookingUseCase {
         private sportCourtRepository: SportCourtsRepository
     ) {}
 
-    async execute({ user_id, sportCourt_id, start_time, end_time }: CreateBookingUseCaseRequest): Promise<CreateBookingUseCaseResponse> 
+    async execute({ userId, sportCourtId, startTime, endTime }: CreateBookingUseCaseRequest): Promise<CreateBookingUseCaseResponse> 
     {
-        const startDate = dayjs(start_time)
-        const endDate = dayjs(end_time)
-
+        const startTimeJs = dayjs(startTime)
+        const endTimeJs = dayjs(endTime)
 
         // Checking if SportCourt exists
-        const sportCourt = await this.sportCourtRepository.findById(sportCourt_id)
+        const sportCourt = await this.sportCourtRepository.findById(sportCourtId)
 
         if (!sportCourt) {
             throw new ResourceNotFound()
         }
 
-        //Checking if is a 2 hours difference
-        const isATwoHoursDifference = startDate.isAfter(dayjs().add(2, 'hour'))
-
-        if (!isATwoHoursDifference) {
-            throw new Error()
-        }
-
-        //Checking if ...
-        const dateIsChronologicallyCorrect = startDate.isBefore(endDate)
+        //Checking if time interval is chronologically correct
+        const dateIsChronologicallyCorrect = startTimeJs.isBefore(endTimeJs)
 
         if (!dateIsChronologicallyCorrect) {
-            throw new Error()
+            throw new InvalidTimestampBookingInterval()
         }
 
-        const differenceBetweenDates = endDate.diff(startDate, 'hour', true)
+        //Checking if has a 2 hours difference
+        const isATwoHoursDifference = startTimeJs.isAfter(dayjs().add(2, 'hour'))
+
+        if (!isATwoHoursDifference) {
+            throw new InvalidTimestampBookingInterval()
+        }
+
+        //Checking if interval has a limit of 6 hours
+        const differenceBetweenDates = endTimeJs.diff(startTimeJs, 'hour', true)
 
         if (!(differenceBetweenDates <= 6)) {
-            throw new Error()
+            throw new InvalidTimestampBookingInterval()
         }
 
         // Checking if user has already create a booking today
         const userHasAlreadyBookingToday = await this.bookingRepository.findByUserIdOnDate(
-            user_id,
+            userId,
             new Date()
         )
 
         if (userHasAlreadyBookingToday) {
-            throw new BookingOnSameDate()
+            throw new MaxBookingsPerDayError()
         }
 
         // Checking if court it's already occupied
-        const courtItsAlreadyOccupied = await this.bookingRepository.findBySportCourtIdOnDates(
-            sportCourt_id,
-            start_time,
-            end_time
+        const courtItsAlreadyOccupied = await this.bookingRepository.findBySportCourtIdOnInterval(
+            sportCourtId,
+            startTime,
+            endTime
         )
 
         if (courtItsAlreadyOccupied) {
             throw new SportCourtDateUnavaliable()
         }
 
-        const booking = await this.bookingRepository.create({
-            user_id,
-            sportCourt_id,
-            start_time,
-            end_time
+        const newBooking = await this.bookingRepository.create({
+            user_id: userId,
+            sportCourt_id: sportCourtId,
+            start_time: startTime,
+            end_time: endTime
         })
 
         return {
-            booking,
+            booking: newBooking
         }
     }
 }
