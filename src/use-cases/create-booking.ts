@@ -4,6 +4,7 @@ import type { SportCourtsRepository } from "../repositories/sport-courts-reposit
 import { ResourceNotFound } from "./errors/resource-not-found.ts"
 import { BookingOnSameDate } from "./errors/booking-on-same-date.ts"
 import { SportCourtDateUnavaliable } from "./errors/sport-courts-date-unavaliable.ts"
+import dayjs from "dayjs"
 
 interface CreateBookingUseCaseRequest {
     user_id: string,
@@ -24,28 +25,55 @@ export class CreateBookingUseCase {
 
     async execute({ user_id, sportCourt_id, start_time, end_time }: CreateBookingUseCaseRequest): Promise<CreateBookingUseCaseResponse> 
     {
+        const startDate = dayjs(start_time)
+        const endDate = dayjs(end_time)
+
+
+        // Checking if SportCourt exists
         const sportCourt = await this.sportCourtRepository.findById(sportCourt_id)
 
         if (!sportCourt) {
             throw new ResourceNotFound()
         }
 
-        const userBookingOnSameDay = await this.bookingRepository.findByUserIdOnDate(
+        //Checking if is a 2 hours difference
+        const isATwoHoursDifference = startDate.isAfter(dayjs().add(2, 'hour'))
+
+        if (!isATwoHoursDifference) {
+            throw new Error()
+        }
+
+        //Checking if ...
+        const dateIsChronologicallyCorrect = startDate.isBefore(endDate)
+
+        if (!dateIsChronologicallyCorrect) {
+            throw new Error()
+        }
+
+        const differenceBetweenDates = endDate.diff(startDate, 'hour', true)
+
+        if (!(differenceBetweenDates <= 6)) {
+            throw new Error()
+        }
+
+        // Checking if user has already create a booking today
+        const userHasAlreadyBookingToday = await this.bookingRepository.findByUserIdOnDate(
             user_id,
             new Date()
         )
 
-        if (userBookingOnSameDay) {
+        if (userHasAlreadyBookingToday) {
             throw new BookingOnSameDate()
         }
 
-        const courtBookingTimeConflicts = await this.bookingRepository.findBySportCourtIdOnDates(
+        // Checking if court it's already occupied
+        const courtItsAlreadyOccupied = await this.bookingRepository.findBySportCourtIdOnDates(
             sportCourt_id,
             start_time,
             end_time
         )
 
-        if (courtBookingTimeConflicts) {
+        if (courtItsAlreadyOccupied) {
             throw new SportCourtDateUnavaliable()
         }
 

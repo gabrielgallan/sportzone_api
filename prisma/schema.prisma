@@ -70,12 +70,12 @@ model SportCourt {
   price_per_hour Decimal
 
   bookings            Booking[]
-  court_blocked_times CourtBlockedTimes[]
+  court_blocked_dates CourtBlockedDates[]
 
   @@map("sport_courts")
 }
 
-model CourtBlockedTimes {
+model CourtBlockedDates {
   id         String   @id @default(uuid())
   start_time DateTime
   end_time   DateTime

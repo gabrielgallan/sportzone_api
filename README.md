@@ -3,7 +3,7 @@
 - [x] O usuário deve poder se registrar;
 - [x] O usuário deve poder se autenticar;
 - [x] O usuário deve poder acessar seu perfil;
-- [ ] O usuário deve poder reservar uma quadra por um tempo determinado;
+- [x] O usuário deve poder reservar uma quadra por um tempo determinado;
 - [ ] O usuário deve poder listar todas suas últimas reservas;
 - [ ] O usuário deve poder listar quadras próximas a ele;
 - [ ] O usuário deve poder pesquisar quadras por endereço;
@@ -14,9 +14,10 @@
 ## RN (Regras de negócio)
 
 - [x] Não pode haver dois usuários com o mesmo email;
-- [ ] A reserva só pode ser realizada se o horário da quadra estiver dispónivel;
+- [x] A reserva só pode ser realizada se o horário da quadra estiver dispónivel;
 - [x] O usuário não pode fazer mais do que 1 reserva por dia;
-- [ ] O usuário não pode reservar uma quadra por mais de 6 horas;
+- [x] A reserva deve ser feita com no mínimo 2 horas de antecedencia;
+- [x] O usuário não pode reservar uma quadra por mais de 6 horas;
 - [ ] Para a reserva ser validada deve haver o pagamento em até 15 minutos (via pix ou cartão);
 - [ ] As quadras só podem ser cadastradas por administradores;
 
