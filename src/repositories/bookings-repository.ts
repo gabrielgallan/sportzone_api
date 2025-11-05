@@ -4,5 +4,5 @@ export interface BookingsRepository {
     create(data: Prisma.BookingUncheckedCreateInput): Promise<Booking>
     findByUserIdOnDate(userId: string, date:  Date): Promise<Booking | null>
     findBySportCourtIdOnInterval(sporCourt_id: string, startDate: Date, endDate: Date): Promise<Booking | null>
-    findManyByUserId(userId: string): Promise<Booking[]>
+    findManyByUserId(userId: string, page: number): Promise<Booking[]>
 }

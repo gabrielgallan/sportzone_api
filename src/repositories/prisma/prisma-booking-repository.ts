@@ -1,18 +1,21 @@
-import type { Prisma, Booking } from "@prisma/client"
+import type { Prisma } from "@prisma/client"
 import type { BookingsRepository } from "../bookings-repository.ts";
 import prisma from "root/src/lib/prisma.ts";
 import dayjs from "dayjs";
 
 
 export class PrismaBookingsRepository implements BookingsRepository {
-    async findManyByUserId(userId: string) {
+    async findManyByUserId(userId: string, page: number) {
         const userBookings = await prisma.booking.findMany({
-            where: { user_id: userId }
+            where: { user_id: userId },
+            orderBy: { created_at: "desc" },
+            skip: (page - 1) * 20, // pula os registros das páginas anteriores
+            take: 20,
         })
 
         return userBookings
     }
-    
+
     async findBySportCourtIdOnInterval(sportCourtId: string, startTime: Date, endTime: Date) {
         const conflictingBooking = await prisma.booking.findFirst({
             where: {

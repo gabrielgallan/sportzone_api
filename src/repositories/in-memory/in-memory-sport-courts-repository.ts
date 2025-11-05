@@ -5,6 +5,20 @@ import { randomUUID } from "crypto"
 export class InMemorySportCourtsRepository implements SportCourtsRepository {
     private items: SportCourt[] = []
 
+    async searchAll() {
+        return this.items 
+    }
+
+    async searchManyBySportType(type: string, page: number) {
+        const sportCourts = this.items
+                .filter(court => court.type.toLowerCase().includes(
+                    type.toLowerCase()
+                ))
+                .slice((page - 1) * 20, page * 20)
+            
+        return sportCourts
+    }
+
     async create(data: Prisma.SportCourtCreateInput) {
         const sportCourt = {
             id: data.id ?? randomUUID(),

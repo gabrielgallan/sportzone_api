@@ -7,8 +7,10 @@ import dayjs from "dayjs"
 export class InMemoryBookingsRepository implements BookingsRepository {
     private items: Booking[] = []
 
-    async findManyByUserId(userId: string) {
-        const userBookings = this.items.filter(b => b.user_id === userId)
+    async findManyByUserId(userId: string, page: number) {
+        const userBookings = this.items
+            .filter(b => b.user_id === userId)
+            .slice((page - 1) * 20, page * 20)
 
         return userBookings
     }

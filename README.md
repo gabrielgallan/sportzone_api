@@ -4,10 +4,10 @@
 - [x] O usuário deve poder se autenticar;
 - [x] O usuário deve poder acessar seu perfil;
 - [x] O usuário deve poder reservar uma quadra por um tempo determinado;
-- [ ] O usuário deve poder listar todas suas últimas reservas;
+- [x] O usuário deve poder listar todas suas últimas reservas;
 - [ ] O usuário deve poder listar quadras próximas a ele;
 - [ ] O usuário deve poder pesquisar quadras por endereço;
-- [ ] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição;
+- [x] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição;
 - [ ] Deve ser possível validar a reserva de um usuário;
 - [x] Deve ser possível cadastrar uma quadra;
 
@@ -27,6 +27,7 @@
 
 - [x] A senha do usuário deve estar criptografada;
 - [x] Os dados da aplicação devem ser persistidos em um banco PostgreSQL;
+- [x] Todos os dados da aplicação devem ser paginados em até 20 items;
 - [ ] O usuário deve ser identificado por um JWT (JSON Web Token);
 - [ ] O pagamento da reserva deve ser realizado via uma API de pagamento;
 
