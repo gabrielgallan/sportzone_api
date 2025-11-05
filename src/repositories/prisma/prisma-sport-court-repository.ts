@@ -1,9 +1,25 @@
 import type { Prisma, SportCourt } from "@prisma/client"
 import prisma from "root/src/lib/prisma.ts"
 import type { SportCourtsRepository } from "../sport-courts-repository.ts"
+import { getDistanceBetweenCordinates, type Cordinate } from "root/src/utils/get-distance-between-cordinates.ts"
 
 
 export class PrismaSportCourtsRepository implements SportCourtsRepository {
+    async searchManyNearby(data: Cordinate, page: number) {
+        const sportCourts = await prisma.sportCourt.findMany()
+
+        const nearbySportCourts = sportCourts.filter(court => {
+            const distance = getDistanceBetweenCordinates(
+                { latitude: data.latitude, longitude: data.longitude },
+                { latitude: court.latitude.toNumber(), longitude: court.longitude.toNumber() }
+            )
+
+            return distance < 10
+        }).slice((page - 1) * 20, page * 20)
+
+        return nearbySportCourts
+    }
+
     async searchManyBySportType(type: string, page: number) {
         const sportCourts = await prisma.sportCourt.findMany({
             where: {

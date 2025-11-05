@@ -1,4 +1,4 @@
-import type { Prisma, Booking } from "@prisma/client"
+import { type Prisma, type Booking, BookingStatus } from "@prisma/client"
 import type { BookingsRepository } from "../bookings-repository.ts"
 import { randomUUID } from "crypto"
 import dayjs from "dayjs"
@@ -6,6 +6,24 @@ import dayjs from "dayjs"
 
 export class InMemoryBookingsRepository implements BookingsRepository {
     private items: Booking[] = []
+
+    async save(booking: Booking) {
+        const bookingIndex = this.items.findIndex(b => b.id === booking.id)
+
+        if (bookingIndex >= 0) {
+            this.items[bookingIndex] = booking
+        }
+
+        return booking
+    }
+
+    async findById(bookingId: string) {
+        const booking = this.items.find(b => b.id === bookingId)
+
+        if (!booking) return null
+
+        return booking
+    }
 
     async findManyByUserId(userId: string, page: number) {
         const userBookings = this.items
@@ -51,7 +69,7 @@ export class InMemoryBookingsRepository implements BookingsRepository {
             end_time: new Date(data.end_time),
             sportCourt_id: data.sportCourt_id,
             user_id: data.user_id,
-            status: 'pending',
+            status: BookingStatus.PENDING,
             created_at: new Date()
         }
 

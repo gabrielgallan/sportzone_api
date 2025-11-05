@@ -26,11 +26,11 @@ model User {
 }
 
 model Booking {
-  id         String   @id @default(uuid())
+  id         String        @id @default(uuid())
   start_time DateTime
   end_time   DateTime
-  created_at DateTime @default(now())
-  status     String   @default("pending")
+  created_at DateTime      @default(now())
+  status     BookingStatus @default(PENDING)
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String
@@ -41,6 +41,12 @@ model Booking {
   payment Payment?
 
   @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }
 
 model Payment {

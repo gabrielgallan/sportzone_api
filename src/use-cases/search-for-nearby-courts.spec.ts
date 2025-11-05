@@ -13,7 +13,7 @@ describe('Search for nearby courts use case', () => {
     })
 
     it('should be able to search for nearby user courts', async () => {
-        // => Creating 4 courts far away user (+10 Km)
+        // => Creating 2 courts far away user (+10 Km)
         for (let c = 0; c < 2; c++) {
             await sportCourtsRepository.create({
                 title: 'Soccer SportCourt',

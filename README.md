@@ -5,22 +5,24 @@
 - [x] O usuário deve poder acessar seu perfil;
 - [x] O usuário deve poder reservar uma quadra por um tempo determinado;
 - [x] O usuário deve poder listar todas suas últimas reservas;
-- [ ] O usuário deve poder listar quadras próximas a ele;
-- [ ] O usuário deve poder pesquisar quadras por endereço;
+- [x] O usuário deve poder listar quadras próximas a ele (Até 10km);
+- [x] O usuário deve poder pesquisar quadras por endereço;
 - [x] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição;
-- [ ] Deve ser possível validar a reserva de um usuário;
 - [x] Deve ser possível cadastrar uma quadra;
+- [ ] Deve ser possível restringir horários de uso das quadras;
+- [x] Deve ser possível confirmar uma reserva;
+- [ ] Deve ser possível cancelar uma reserva;
 
 ## RN (Regras de negócio)
 
 - [x] Não pode haver dois usuários com o mesmo email;
-
 - [x] A reserva só pode ser realizada se o horário da quadra estiver dispónivel;
+- [ ] A reserva não pode ser realizada em horários restritos da quadra;
 - [x] O usuário não pode fazer mais do que 1 reserva por dia;
 - [x] A reserva deve ser feita com no mínimo 2 horas de antecedencia;
 - [x] O usuário não pode reservar uma quadra por mais de 6 horas;
-- [ ] Para a reserva ser validada deve haver o pagamento em até 15 minutos (via pix ou cartão);
-
+- [ ] Para a reserva ser confirmada deve haver o pagamento em até 15 minutos (via pix ou cartão);
+- [ ] Se a reserva for cancelada o valor deve ser reembolsado;
 - [ ] As quadras só podem ser cadastradas por administradores;
 
 ## RNFs (Requisitos não funcionais)
@@ -29,8 +31,4 @@
 - [x] Os dados da aplicação devem ser persistidos em um banco PostgreSQL;
 - [x] Todos os dados da aplicação devem ser paginados em até 20 items;
 - [ ] O usuário deve ser identificado por um JWT (JSON Web Token);
-- [ ] O pagamento da reserva deve ser realizado via uma API de pagamento;
-
-## To Fix
-
-- payments repositories
+- [ ] A reserva deve ser confirmada em até 15 minutos por uma API de pagamento;

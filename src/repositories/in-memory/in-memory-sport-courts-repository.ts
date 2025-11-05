@@ -1,21 +1,35 @@
 import { Prisma, type SportCourt } from "@prisma/client"
 import type { SportCourtsRepository } from "../sport-courts-repository.ts"
 import { randomUUID } from "crypto"
+import { getDistanceBetweenCordinates, type Cordinate } from "root/src/utils/get-distance-between-cordinates.ts"
 
 export class InMemorySportCourtsRepository implements SportCourtsRepository {
     private items: SportCourt[] = []
 
+    async searchManyNearby(data: Cordinate, page: number) {
+        const nearbySportCourts = this.items.filter(court => {
+            const distance = getDistanceBetweenCordinates(
+                { latitude: data.latitude, longitude: data.longitude },
+                { latitude: court.latitude.toNumber(), longitude: court.longitude.toNumber() }
+            )
+
+            return distance < 10
+        }).slice((page - 1) * 20, page * 20)
+
+        return nearbySportCourts
+    }
+
     async searchAll() {
-        return this.items 
+        return this.items
     }
 
     async searchManyBySportType(type: string, page: number) {
         const sportCourts = this.items
-                .filter(court => court.type.toLowerCase().includes(
-                    type.toLowerCase()
-                ))
-                .slice((page - 1) * 20, page * 20)
-            
+            .filter(court => court.type.toLowerCase().includes(
+                type.toLowerCase()
+            ))
+            .slice((page - 1) * 20, page * 20)
+
         return sportCourts
     }
 

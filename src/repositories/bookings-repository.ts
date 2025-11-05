@@ -5,4 +5,6 @@ export interface BookingsRepository {
     findByUserIdOnDate(userId: string, date:  Date): Promise<Booking | null>
     findBySportCourtIdOnInterval(sporCourt_id: string, startDate: Date, endDate: Date): Promise<Booking | null>
     findManyByUserId(userId: string, page: number): Promise<Booking[]>
+    findById(bookingId: string): Promise<Booking | null>
+    save(booking: Booking): Promise<Booking>
 }
