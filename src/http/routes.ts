@@ -4,7 +4,6 @@ import { authenticate } from "./controllers/authenticate.ts"
 import { getProfile } from "./controllers/get-profile.ts"
 import z from "zod"
 import { GetGeocodingByAddress } from "../integrations/geocoding/get-cordinate-from-address.ts"
-import { GetAddressByGeoLoc } from "../integrations/geocoding/get-address-from-cordinates.ts"
 import { AddressNotFound } from "../integrations/geocoding/errors/address-not-found.ts"
 import { HttpGetGeocodingApiFailed } from "../integrations/geocoding/errors/http-get-geocoding-failed.ts"
 

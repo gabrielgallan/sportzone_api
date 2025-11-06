@@ -27,7 +27,7 @@ describe("Fetch user bookings history use case", () => {
         })
 
         for (let c = 0; c < 25; c++) {
-            await bookingsRepository.create({
+            const newBooking = await bookingsRepository.create({
                 user_id: userCreated.id,
                 sportCourt_id: `court-${c}`,
                 start_time: new Date(2025, 0, 13, 10, 0, 0),

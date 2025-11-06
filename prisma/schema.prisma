@@ -47,6 +47,7 @@ enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+  ERROR
 }
 
 model Payment {
@@ -76,12 +77,12 @@ model SportCourt {
 
   bookings Booking[]
 
-  court_blocked_dates CourtBlockedDates[]
+  court_blocked_dates CourtBlockedDate[]
 
   @@map("sport_courts")
 }
 
-model CourtBlockedDates {
+model CourtBlockedDate {
   id         String   @id @default(uuid())
   start_time DateTime
   end_time   DateTime
@@ -90,5 +91,5 @@ model CourtBlockedDates {
   sportCourt    SportCourt @relation(fields: [sportCourt_id], references: [id])
   sportCourt_id String
 
-  @@map("court_blocked_times")
+  @@map("court_blocked_dates")
 }

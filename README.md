@@ -9,20 +9,21 @@
 - [x] O usuário deve poder pesquisar quadras por endereço;
 - [x] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição;
 - [x] Deve ser possível cadastrar uma quadra;
-- [ ] Deve ser possível restringir horários de uso das quadras;
+- [x] Deve ser possível restringir horários de uso das quadras;
 - [x] Deve ser possível confirmar uma reserva;
-- [ ] Deve ser possível cancelar uma reserva;
+- [x] Deve ser possível cancelar uma reserva depois de confirmada;
 
 ## RN (Regras de negócio)
 
 - [x] Não pode haver dois usuários com o mesmo email;
 - [x] A reserva só pode ser realizada se o horário da quadra estiver dispónivel;
-- [ ] A reserva não pode ser realizada em horários restritos da quadra;
+- [x] A reserva não pode ser realizada em horários restritos da quadra;
 - [x] O usuário não pode fazer mais do que 1 reserva por dia;
 - [x] A reserva deve ser feita com no mínimo 2 horas de antecedencia;
 - [x] O usuário não pode reservar uma quadra por mais de 6 horas;
-- [ ] Para a reserva ser confirmada deve haver o pagamento em até 15 minutos (via pix ou cartão);
+- [x] Para a reserva ser confirmada deve haver o pagamento em até 20 minutos (via pix ou cartão);
 - [ ] Se a reserva for cancelada o valor deve ser reembolsado;
+- [x] A reserva só pode ser cancelada com no mínimo 2 horas de antecedencia;
 - [ ] As quadras só podem ser cadastradas por administradores;
 
 ## RNFs (Requisitos não funcionais)

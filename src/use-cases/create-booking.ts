@@ -6,6 +6,7 @@ import { MaxBookingsPerDayError } from "./errors/max-bookings-per-day-error.ts"
 import { SportCourtDateUnavaliable } from "./errors/sport-courts-date-unavaliable.ts"
 import dayjs from "dayjs"
 import { InvalidTimestampBookingInterval } from "./errors/invalid-timestamp-booking-interval.ts"
+import type { CourtBlockedDatesRepository } from "../repositories/court-blocked-dates-repository.ts"
 
 interface CreateBookingUseCaseRequest {
     userId: string,
@@ -21,7 +22,8 @@ interface CreateBookingUseCaseResponse {
 export class CreateBookingUseCase {
     constructor(
         private bookingRepository: BookingsRepository,
-        private sportCourtRepository: SportCourtsRepository
+        private sportCourtRepository: SportCourtsRepository,
+        private courtBlockedDatesRepository: CourtBlockedDatesRepository
     ) {}
 
     async execute({ userId, sportCourtId, startTime, endTime }: CreateBookingUseCaseRequest): Promise<CreateBookingUseCaseResponse> 
@@ -73,8 +75,19 @@ export class CreateBookingUseCase {
             startTime,
             endTime
         )
-
+        
         if (courtItsAlreadyOccupied) {
+            throw new SportCourtDateUnavaliable()
+        }
+        
+        // Checking if court it's blocked on date
+        const courtItsBlockedOnDate = await this.courtBlockedDatesRepository.findByTimeInterval(
+            sportCourtId,
+            startTime,
+            endTime
+        )
+
+        if (courtItsBlockedOnDate) {
             throw new SportCourtDateUnavaliable()
         }
 

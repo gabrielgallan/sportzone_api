@@ -2,6 +2,8 @@ import { BookingStatus, type Booking } from "@prisma/client"
 import type { BookingsRepository } from "../repositories/bookings-repository.ts"
 import { ResourceNotFound } from "./errors/resource-not-found.ts"
 import { InvalidBookingStatus } from "./errors/invalid-booking-status-error.ts"
+import dayjs from "dayjs"
+import { LateBookingConfirmation } from "./errors/late-booking-validation.ts"
 
 interface ConfirmBookingUseCaseRequest {
     bookingId: string
@@ -17,19 +19,32 @@ export class ConfirmBookingUseCase {
     async execute({ 
         bookingId 
     }: ConfirmBookingUseCaseRequest): Promise<ConfirmBookingUseCaseResponse> {
-        const bookingExists = await this.bookingRepository.findById(bookingId)
+        const booking = await this.bookingRepository.findById(bookingId)
 
-        if (!bookingExists) {
+        if (!booking) {
             throw new ResourceNotFound()
         }
 
-        if (bookingExists.status !== BookingStatus.PENDING) {
+        const distanceInMinutesFromBookingCreation = dayjs(new Date()).diff(
+            booking.created_at,
+            'minutes'
+        )
+
+        if (distanceInMinutesFromBookingCreation > 20) {
+            booking.status = BookingStatus.ERROR
+
+            await this.bookingRepository.save(booking)
+
+            throw new LateBookingConfirmation()
+        }
+
+        if (booking.status !== BookingStatus.PENDING) {
             throw new InvalidBookingStatus()
         }
 
-        bookingExists.status = BookingStatus.CONFIRMED
+        booking.status = BookingStatus.CONFIRMED
 
-        const booking = await this.bookingRepository.save(bookingExists) 
+        await this.bookingRepository.save(booking) 
 
         return {
             booking,
