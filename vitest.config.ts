@@ -3,10 +3,8 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     projects: [
-      './vitest.config.unit.ts',
-      './vitest.config.e2e.ts'
+      'vitest.unit.config.ts',
+      'vitest.e2e.config.ts'
     ]
-  },
+  }
 })
-
-// './prisma/vitest-environment-prisma/prisma-test-environment.ts'
