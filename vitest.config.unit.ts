@@ -1,11 +1,12 @@
 import { defineConfig } from 'vitest/config'
+import tsconfigPaths from 'vite-tsconfig-paths'
+
 
 export default defineConfig({
+plugins: [tsconfigPaths()],
   test: {
-    projects: [
-      './vitest.config.unit.ts',
-      './vitest.config.e2e.ts'
-    ]
+    include: ['src/use-cases/**/*.spec.ts'],
+    environment: 'node',
   },
 })
 

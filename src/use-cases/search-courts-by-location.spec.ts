@@ -2,11 +2,12 @@ import { it, describe, expect, beforeEach } from 'vitest'
 import type { SportCourtsRepository } from '../repositories/sport-courts-repository.ts'
 import { InMemorySportCourtsRepository } from '../repositories/in-memory/in-memory-sport-courts-repository.ts'
 import { SearchCourtsByLocationUseCase } from './search-courts-by-location.ts'
+import { AddressNotFound } from '../integrations/geocoding/errors/address-not-found.ts'
 
 let sportCourtsRepository: SportCourtsRepository
 let sut: SearchCourtsByLocationUseCase
 
-describe.skip('Search courts by location address use case', () => {
+describe('Search courts by location address use case', () => {
     beforeEach(() => {
         sportCourtsRepository = new InMemorySportCourtsRepository()
         sut = new SearchCourtsByLocationUseCase(sportCourtsRepository)
@@ -49,5 +50,15 @@ describe.skip('Search courts by location address use case', () => {
         })
 
         expect(sportCourts).toHaveLength(2)
+    })
+
+    it('should not be able to search courts by non-existent location address', async () => {
+        await expect(() =>
+            sut.execute({
+                routeName: 'non-existent-street',
+                number: 0,
+                page: 1
+            })
+        ).rejects.toBeInstanceOf(AddressNotFound)
     })
 })

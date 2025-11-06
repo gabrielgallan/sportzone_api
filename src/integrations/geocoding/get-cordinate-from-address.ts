@@ -1,11 +1,11 @@
 import axios from 'axios'
 import env from 'root/src/env/config.ts'
 import type { Cordinate } from 'root/src/utils/get-distance-between-cordinates.ts'
-import { HttpGetGeocodingApiFailed } from './errors/http-get-geocoding-failed.ts'
+import { GeocodingHttpRequestError } from './errors/geocoding-http-request-error.ts'
 import { AddressNotFound } from './errors/address-not-found.ts'
-import { GeocodingRateLimitError } from './errors/rate-limit-error.ts'
+import { ResponseRateLimitError } from './errors/response-rate-limit-error.ts'
 
-export async function GetGeocodingByAddress(address: string): Promise<Cordinate> {
+export async function GetCordinatesByAddress(address: string): Promise<Cordinate> {
     try {
         const encoded = encodeURIComponent(address)
 
@@ -13,12 +13,12 @@ export async function GetGeocodingByAddress(address: string): Promise<Cordinate>
 
         const response = await axios.get(url, {
             headers: {
-                'User-Agent': 'SportZone/1.0'
+                'User-Agent': 'SportZone API'
             }
         })
 
         if (response.status === 429) {
-            throw new GeocodingRateLimitError()
+            throw new ResponseRateLimitError()
         }
 
         if (!response.data || response.data.length === 0) {
@@ -34,12 +34,12 @@ export async function GetGeocodingByAddress(address: string): Promise<Cordinate>
     } catch (err: any) {
         if (
             err instanceof AddressNotFound ||
-            err instanceof GeocodingRateLimitError
+            err instanceof ResponseRateLimitError
         ) {
             throw err
         }
 
         // Erros de rede, timeout, etc.
-        throw new HttpGetGeocodingApiFailed(err.message)
+        throw new GeocodingHttpRequestError(err.message)
     }
 }
