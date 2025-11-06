@@ -11,28 +11,7 @@ import { HttpGetGeocodingApiFailed } from "../integrations/geocoding/errors/http
 export async function appRoutes(app: FastifyInstance) {
     app.post('/users', register)
     app.post('/sessions', authenticate)
-    app.get('/profile', getProfile)
 
-    app.post('/address-consult', async (request, reply) => {
-        const bodySchema = z.object({
-            address: z.string()
-        })
-
-        const { address } = bodySchema.parse(request.body)
-
-        try {
-            const response = await GetGeocodingByAddress(address)
-            reply.status(200).send(response)
-        } catch (err) {
-            if (err instanceof AddressNotFound) {
-                reply.status(404).send({ error: err.message })
-            }
-
-            if (err instanceof HttpGetGeocodingApiFailed) {
-                reply.status(500).send({ error: err.message })
-            }
-
-            throw err
-        }        
-    })
+    /* Authenticated */
+    app.get('/my-profile', getProfile)
 }

@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma, type CourtBlockedDate } from "@prisma/client"
 import type { CourtBlockedDatesRepository } from "../court-blocked-dates-repository.ts"
 import prisma from "root/src/lib/prisma.ts"
 
@@ -8,8 +8,20 @@ export class PrismaCourtBlockedDatesRepository implements CourtBlockedDatesRepos
         const courtBlockedDate = await prisma.courtBlockedDate.create({
             data
         })
-
+        
         return courtBlockedDate
+    }
+    
+    async findByTimeInterval(sportCourtId: string, startDate: Date, endDate: Date) {
+        const blockedDate = await prisma.courtBlockedDate.findFirst({
+            where: {
+                sportCourt_id: sportCourtId,
+                start_time: { lt: endDate },
+                end_time: { gt: startDate }
+            }
+        })
+
+        return blockedDate
     }
 
     async findManyBySportCourtId(sportCourtId: string) {

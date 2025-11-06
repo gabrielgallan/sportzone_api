@@ -1,10 +1,26 @@
-import type { Prisma } from "@prisma/client"
+import type { Booking, Prisma } from "@prisma/client"
 import type { BookingsRepository } from "../bookings-repository.ts";
 import prisma from "root/src/lib/prisma.ts";
 import dayjs from "dayjs";
 
 
 export class PrismaBookingsRepository implements BookingsRepository {
+    async create(data: Prisma.BookingUncheckedCreateInput) {
+        const booking = await prisma.booking.create({
+            data
+        })
+
+        return booking
+    }
+
+    async findById(bookingId: string) {
+        const booking = await prisma.booking.findUnique({
+            where: { id: bookingId }
+        })
+
+        return booking
+    }
+
     async findManyByUserId(userId: string, page: number) {
         const userBookings = await prisma.booking.findMany({
             where: { user_id: userId },
@@ -14,18 +30,6 @@ export class PrismaBookingsRepository implements BookingsRepository {
         })
 
         return userBookings
-    }
-
-    async findBySportCourtIdOnInterval(sportCourtId: string, startTime: Date, endTime: Date) {
-        const conflictingBooking = await prisma.booking.findFirst({
-            where: {
-                sportCourt_id: sportCourtId,
-                start_time: { lt: endTime },
-                end_time: { gt: startTime }
-            }
-        })
-
-        return conflictingBooking
     }
 
     async findByUserIdOnDate(userId: string, date: Date) {
@@ -45,11 +49,24 @@ export class PrismaBookingsRepository implements BookingsRepository {
         return booking
     }
 
-    async create(data: Prisma.BookingUncheckedCreateInput) {
-        const booking = await prisma.booking.create({
-            data
+    async findBySportCourtIdOnInterval(sportCourtId: string, startTime: Date, endTime: Date) {
+        const conflictingBooking = await prisma.booking.findFirst({
+            where: {
+                sportCourt_id: sportCourtId,
+                start_time: { lt: endTime },
+                end_time: { gt: startTime }
+            }
         })
 
-        return booking
+        return conflictingBooking
+    }
+    
+    async save(booking: Booking) {
+        const updBooking = await prisma.booking.update({
+            where: { id: booking.id },
+            data: booking
+        })
+
+        return updBooking
     }
 }

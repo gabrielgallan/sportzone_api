@@ -5,6 +5,22 @@ import { getDistanceBetweenCordinates, type Cordinate } from "root/src/utils/get
 
 
 export class PrismaSportCourtsRepository implements SportCourtsRepository {
+    async create(data: Prisma.SportCourtCreateInput): Promise<SportCourt> {
+        const sportCourt = await prisma.sportCourt.create({
+            data
+        })
+
+        return sportCourt
+    }
+
+    async findById(id: string) {
+        const sportCourt = await prisma.sportCourt.findUnique({
+            where: { id }
+        })
+
+        return sportCourt
+    }
+
     async searchManyNearby(data: Cordinate, page: number) {
         const sportCourts = await prisma.sportCourt.findMany()
 
@@ -33,22 +49,5 @@ export class PrismaSportCourtsRepository implements SportCourtsRepository {
         })
 
         return sportCourts
-    }
-
-
-    async create(data: Prisma.SportCourtCreateInput): Promise<SportCourt> {
-        const sportCourt = await prisma.sportCourt.create({
-            data
-        })
-
-        return sportCourt
-    }
-
-    async findById(id: string) {
-        const sportCourt = await prisma.sportCourt.findUnique({
-            where: { id }
-        })
-
-        return sportCourt
     }
 }

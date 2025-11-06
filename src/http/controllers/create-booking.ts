@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
-import { BookingOnSameDate } from "root/src/use-cases/errors/max-bookings-per-day-error.ts";
+import { MaxBookingsPerDayError } from "root/src/use-cases/errors/max-bookings-per-day-error.ts";
 import { makeCreateBookingUseCase } from "root/src/use-cases/factories/make-create-booking-use-case.ts";
 import { ResourceNotFound } from "root/src/use-cases/errors/resource-not-found.ts";
 import { InvalidTimestampBookingInterval } from "root/src/use-cases/errors/invalid-timestamp-booking-interval.ts";
@@ -32,7 +32,7 @@ export async function createBooking(request: FastifyRequest, reply: FastifyReply
         }
 
 
-        if (err instanceof BookingOnSameDate) {
+        if (err instanceof MaxBookingsPerDayError) {
             return reply.status(409).send({ error: err.message })    
         }
 
