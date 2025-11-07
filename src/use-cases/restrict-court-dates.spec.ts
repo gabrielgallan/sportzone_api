@@ -42,7 +42,8 @@ describe('Restrict Court Dates Use Case', () => {
         const { courtBlockedDate } = await sut.execute({
             sportCourtId: sportCourt.id,
             startDate: new Date(2025, 0, 15, 8, 0),
-            endDate: new Date(2025, 0, 15, 15, 0)
+            endDate: new Date(2025, 0, 15, 15, 0),
+            reason: null
         })
 
         expect(courtBlockedDate).toEqual(expect.objectContaining({
@@ -68,7 +69,8 @@ describe('Restrict Court Dates Use Case', () => {
             sut.execute({
                 sportCourtId: sportCourt.id,
                 startDate: new Date(2025, 0, 15, 18, 0),
-                endDate: new Date(2025, 0, 15, 9, 0)
+                endDate: new Date(2025, 0, 15, 9, 0),
+                reason: null
             })
         ).rejects.toBeInstanceOf(IncorrectTimestampInterval)
     })

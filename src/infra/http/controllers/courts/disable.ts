@@ -14,11 +14,11 @@ export async function disable(request: FastifyRequest, reply: FastifyReply) {
     try {
         const disableSportCourtUseCase = makeDisableSportCourtUseCase()
 
-        const { sportCourt } = await disableSportCourtUseCase.execute({
+        await disableSportCourtUseCase.execute({
             sportCourtId
         })
 
-        return reply.status(204).send({ sportCourt })
+        return reply.status(204).send()
     } catch (err) {
         if (err instanceof ResourceNotFound) {
             return reply.status(404).send({ error: err.message })

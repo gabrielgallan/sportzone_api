@@ -12,11 +12,11 @@ export async function courtRoutes(app: FastifyInstance) {
     app.addHook('onRequest', verifyJWT)
 
     app.post('/sport-courts', create)
-    app.post('/sport-courts/nearby', nearby)
-    app.post('/sport-courts/:id/restrict', restrict)
-
-    app.get('/sport-courts/location', findLocation)
-    app.get('/sport-courts/type', findType)
-
-    app.patch('/sport-courts/availability', disable)
+    
+    app.post('/sport-courts/search/nearby', nearby)
+    app.post('/sport-courts/search/local', findLocation)
+    app.post('/sport-courts/search/type', findType)
+    
+    app.post('/sport-courts/:sportCourtId/restriction', restrict)
+    app.patch('/sport-courts/:sportCourtId/availability', disable)
 }

@@ -3,7 +3,7 @@ import app from 'root/src/app.ts'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { registerAndAuthenticateUser } from 'root/src/utils/test/register-and-authenticate-user.ts'
 
-describe('Search for nearby sport courts (E2E)', async () => {
+describe('Search sport courts by location address (E2E)', async () => {
     beforeAll(async () => {
         await app.ready()
     })
@@ -12,42 +12,43 @@ describe('Search for nearby sport courts (E2E)', async () => {
         await app.close()
     })
 
-    it('should be able to search for nearby sport courts', async () => {
+    it('should be able to search sport courts by location address', async () => {
         const { token } = await registerAndAuthenticateUser(app)
 
         await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                title: 'Soccer SportCourt',
-                type: 'Soccer',
+                title: 'SportCourt 1',
+                type: 'none',
+                location: 'Shopping Jardim Sul',
                 phone: '',
-                location: 'Shopping Jardim Sul Quadra',
-                latitude: -23.475740,
-                longitude: -46.749997,
+                latitude: -23.6305222,
+                longitude: -46.7361007,
                 price_per_hour: 20
-            }).expect(201)
+            })
 
         await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                title: 'Volei SportCourt',
-                type: 'Volei',
+                title: 'SportCourt 2',
+                type: 'none',
+                location: 'Shopping Center Norte',
                 phone: '',
-                location: 'Vila Santa Monica Quadra',
-                latitude: -23.630180,
-                longitude: -46.735809,
+                latitude: -23.5159715,
+                longitude: -46.6244467,
                 price_per_hour: 20
-            }).expect(201)
+            })
 
-        const nearbyCourtsResponse = await request(app.server)
-            .post('/sport-courts/search/nearby')
+
+        const nearCourts = await request(app.server)
+            .post(`/sport-courts/search/location`)
             .set('Authorization', `Bearer ${token}`)
             .send({
-                userLatitude: -23.6140472,
-                userLongitude: -46.7413994,
+                routeName: 'Rua Chico Pontes',
+                number: 921,
                 page: 1
             }).expect(200)
-        
-        expect(nearbyCourtsResponse.body.sportCourts).toHaveLength(1)
+
+        expect(nearCourts.body.sportCourts).toHaveLength(1)
     })
 })

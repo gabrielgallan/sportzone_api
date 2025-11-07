@@ -3,7 +3,7 @@ import app from 'root/src/app.ts'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { registerAndAuthenticateUser } from 'root/src/utils/test/register-and-authenticate-user.ts'
 
-describe('Restrict sport court date (E2E)', async () => {
+describe('Disable sport court (E2E)', async () => {
     beforeAll(async () => {
         await app.ready()
     })
@@ -12,10 +12,10 @@ describe('Restrict sport court date (E2E)', async () => {
         await app.close()
     })
 
-    it('should be able to restrict sport court date', async () => {
+    it('should be able to disable a sport court', async () => {
         const { token } = await registerAndAuthenticateUser(app)
 
-        const response = await request(app.server).post('/sport-courts')
+        const createResponse = await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'Soccer SportCourt',
@@ -25,17 +25,15 @@ describe('Restrict sport court date (E2E)', async () => {
                 latitude: -23.630180,
                 longitude: -46.735809,
                 price_per_hour: 20
-            })
+            }).expect(201)
+        
+        const { sportCourtId } = createResponse.body
 
-        const { sportCourtId } = response.body
-
-        await request(app.server)
-            .post(`/sport-courts/${sportCourtId}/restriction`)
+        const disableResponse = await request(app.server)
+            .patch(`/sport-courts/${sportCourtId}/availability`)
             .set('Authorization', `Bearer ${token}`)
             .send({
-                startDate: new Date(2025, 10, 10, 12, 0),
-                endDate: new Date(2025, 10, 10, 18, 0),
-                reason: ''
-            }).expect(201)
+                sportCourtId,
+            }).expect(204)
     })
 })

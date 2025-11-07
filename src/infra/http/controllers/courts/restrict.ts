@@ -6,15 +6,16 @@ import { IncorrectTimestampInterval } from "root/src/use-cases/errors/incorrect-
 
 export async function restrict(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
-        startDate: z.date(),
-        endDate: z.date()
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date(),
+        reason: z.string()
     })
 
     const paramsSchema = z.object({
         sportCourtId: z.string()
     })
 
-    const { startDate, endDate } = bodySchema.parse(request.body)
+    const { startDate, endDate, reason } = bodySchema.parse(request.body)
     const { sportCourtId } = paramsSchema.parse(request.params)
 
     try {
@@ -23,7 +24,8 @@ export async function restrict(request: FastifyRequest, reply: FastifyReply) {
         const { courtBlockedDate } = await restrictCourtDateUseCase.execute({
             sportCourtId,
             startDate,
-            endDate
+            endDate,
+            reason
         })
 
         return reply.status(201).send({

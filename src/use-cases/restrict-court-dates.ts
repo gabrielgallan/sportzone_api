@@ -8,7 +8,8 @@ import { IncorrectTimestampInterval } from "./errors/incorrect-timestamp-interva
 interface RestrictCourtDateUseCaseRequest {
     sportCourtId: string,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    reason: string | null
 }
 
 interface RestrictCourtDateUseCaseResponse {
@@ -21,7 +22,7 @@ export class RestrictCourtDateUseCase {
         private courtBlockedDatesRepository: CourtBlockedDatesRepository
     ) { }
 
-    async execute({ sportCourtId, startDate, endDate }: RestrictCourtDateUseCaseRequest): Promise<RestrictCourtDateUseCaseResponse> {
+    async execute({ sportCourtId, startDate, endDate, reason }: RestrictCourtDateUseCaseRequest): Promise<RestrictCourtDateUseCaseResponse> {
         const sportCourt = await this.sportCourtsRepository.findById(sportCourtId)
         const startDateJs = dayjs(startDate)
         const endDateJs = dayjs(endDate)
@@ -39,7 +40,8 @@ export class RestrictCourtDateUseCase {
         const courtBlockedDate = await this.courtBlockedDatesRepository.create({
             sportCourt_id: sportCourtId,
             start_time: startDate,
-            end_time: endDate
+            end_time: endDate,
+            reason
         })
 
         return {

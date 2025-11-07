@@ -3,7 +3,7 @@ import app from 'root/src/app.ts'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { registerAndAuthenticateUser } from 'root/src/utils/test/register-and-authenticate-user.ts'
 
-describe('Search for nearby sport courts (E2E)', async () => {
+describe('Search sport courts by sport type (E2E)', async () => {
     beforeAll(async () => {
         await app.ready()
     })
@@ -12,20 +12,22 @@ describe('Search for nearby sport courts (E2E)', async () => {
         await app.close()
     })
 
-    it('should be able to search for nearby sport courts', async () => {
+    it('should be able to search sport courts by sport type', async () => {
         const { token } = await registerAndAuthenticateUser(app)
 
-        await request(app.server).post('/sport-courts')
+        for (let c = 0; c < 2; c++) {
+            await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'Soccer SportCourt',
                 type: 'Soccer',
                 phone: '',
-                location: 'Shopping Jardim Sul Quadra',
-                latitude: -23.475740,
-                longitude: -46.749997,
+                location: 'Nonexisting Street',
+                latitude: -23.630180,
+                longitude: -46.735809,
                 price_per_hour: 20
-            }).expect(201)
+            })
+        }
 
         await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
@@ -33,21 +35,20 @@ describe('Search for nearby sport courts (E2E)', async () => {
                 title: 'Volei SportCourt',
                 type: 'Volei',
                 phone: '',
-                location: 'Vila Santa Monica Quadra',
+                location: 'Nonexisting Street',
                 latitude: -23.630180,
                 longitude: -46.735809,
                 price_per_hour: 20
-            }).expect(201)
+            })
 
-        const nearbyCourtsResponse = await request(app.server)
-            .post('/sport-courts/search/nearby')
+        const soccerCourts = await request(app.server)
+            .post(`/sport-courts/search/type`)
             .set('Authorization', `Bearer ${token}`)
             .send({
-                userLatitude: -23.6140472,
-                userLongitude: -46.7413994,
+                type: 'Soccer',
                 page: 1
             }).expect(200)
-        
-        expect(nearbyCourtsResponse.body.sportCourts).toHaveLength(1)
+
+        expect(soccerCourts.body.sportCourts).toHaveLength(2)
     })
 })
