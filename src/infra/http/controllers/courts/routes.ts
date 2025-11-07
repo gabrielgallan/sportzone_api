@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify"
-import { verifyJWT } from "@/http/middlewares/verify-jwt.ts"
+import { verifyJWT } from "@/infra/http/middlewares/verify-jwt.ts"
 import { create } from "./create.ts"
 import { nearby } from "./nearby.ts"
 import { findLocation } from "./search-by-location.ts"

@@ -2,15 +2,23 @@ import { it, describe, expect, beforeEach } from 'vitest'
 import type { SportCourtsRepository } from '../repositories/sport-courts-repository.ts'
 import { InMemorySportCourtsRepository } from '../repositories/in-memory/in-memory-sport-courts-repository.ts'
 import { SearchCourtsByLocationUseCase } from './search-courts-by-location.ts'
-import { AddressNotFound } from '../integrations/geocoding/errors/address-not-found.ts'
+import type { GeocodingServices } from '../infra/external/geocoding-services.ts'
+import { LocationIqGeocodingServices } from '../infra/external/locationiq/locationiq-geocoding-services.ts'
+import { AddressNotFound } from '../infra/external/locationiq/errors/address-not-found.ts'
 
 let sportCourtsRepository: SportCourtsRepository
+let geocodingServices: GeocodingServices
 let sut: SearchCourtsByLocationUseCase
 
 describe('Search courts by location address use case', () => {
     beforeEach(() => {
         sportCourtsRepository = new InMemorySportCourtsRepository()
-        sut = new SearchCourtsByLocationUseCase(sportCourtsRepository)
+        geocodingServices = new LocationIqGeocodingServices()
+        
+        sut = new SearchCourtsByLocationUseCase(
+            sportCourtsRepository,
+            geocodingServices
+        )
     })
 
     it('should be able to search courts by location address', async () => {

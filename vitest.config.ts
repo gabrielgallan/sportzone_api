@@ -19,12 +19,9 @@ export default defineConfig({
       defineProject({
         plugins: [tsconfigPaths()],
         test: {
-          name: 'E2E',
-          include: ['src/http/controllers/**/*.spec.ts'],
-          environment: new URL(
-            './prisma/vitest-environment-prisma/prisma-test-environment.ts',
-            import.meta.url,
-          ).pathname,
+          name: 'e2e',
+          include: ['src/infra/http/controllers/**/*.spec.ts'],
+          environment: './prisma/vitest-environment-prisma/prisma-test-environment.ts',
           environmentOptions: {
             prisma: {},
           },

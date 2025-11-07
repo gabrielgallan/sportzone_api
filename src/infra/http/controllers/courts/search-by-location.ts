@@ -1,9 +1,9 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
-import { makeSearchCourtsByLocationUseCase } from "root/src/use-cases/factories/make-search-courts-by-location-use-case.ts";
-import { ResponseRateLimitError } from "root/src/integrations/geocoding/errors/response-rate-limit-error.ts";
-import { AddressNotFound } from "root/src/integrations/geocoding/errors/address-not-found.ts";
-import { GeocodingHttpRequestError } from "root/src/integrations/geocoding/errors/geocoding-http-request-error.ts";
+import { makeSearchCourtsByLocationUseCase } from "@/use-cases/factories/make-search-courts-by-location-use-case.ts";
+import { AddressNotFound } from "root/src/infra/external/locationiq/errors/address-not-found.ts";
+import { LocationIqServerError } from "root/src/infra/external/locationiq/errors/locationiq-server-error.ts";
+import { InternalServerError } from "root/src/infra/external/locationiq/errors/internal-server-error.ts";
 
 export async function findLocation(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
@@ -25,16 +25,12 @@ export async function findLocation(request: FastifyRequest, reply: FastifyReply)
 
         return reply.status(200).send({ sportCourts })
     } catch (err) {
-        if (err instanceof ResponseRateLimitError) {
-            return reply.status(429).send({ error: err.message })
-        }
-
         if (err instanceof AddressNotFound) {
             return reply.status(404).send({ error: err.message })
         }
 
-        if (err instanceof GeocodingHttpRequestError) {
-            return reply.status(500).send({ error: err.message })
+        if (err instanceof LocationIqServerError) {
+            return reply.status(502).send({ error: err.message })
         }
 
         throw err

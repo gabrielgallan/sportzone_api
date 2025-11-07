@@ -1,6 +1,6 @@
 import type { SportCourt } from "@prisma/client"
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts"
-import { GetCordinatesByAddress } from "../integrations/geocoding/get-cordinate-from-address.ts"
+import type { GeocodingServices } from "../infra/external/geocoding-services.ts"
 
 interface SearchCourtsByLocationUseCaseRequest {
     routeName: string,
@@ -13,12 +13,15 @@ interface SearchCourtsByLocationUseCaseResponse {
 }
 
 export class SearchCourtsByLocationUseCase {
-    constructor(private sportCourtsRepository: SportCourtsRepository) {}
+    constructor(
+        private sportCourtsRepository: SportCourtsRepository,
+        private geocodingServices: GeocodingServices
+    ) {}
 
     async execute({ routeName, number, page }: SearchCourtsByLocationUseCaseRequest): Promise<SearchCourtsByLocationUseCaseResponse> {
-        const location = `${routeName} ${number}`
+        const address = `${routeName} ${number}`
         
-        const { latitude, longitude } = await GetCordinatesByAddress(location)
+        const { latitude, longitude } = await this.geocodingServices.getCordinatesFromAddress({ address })
         
         const sportCourts = await this.sportCourtsRepository.searchManyNearby({
             latitude,
