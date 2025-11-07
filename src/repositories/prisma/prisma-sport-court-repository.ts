@@ -5,6 +5,15 @@ import { getDistanceBetweenCordinates, type Cordinate } from "root/src/utils/get
 
 
 export class PrismaSportCourtsRepository implements SportCourtsRepository {
+    async save(sportCourt: SportCourt) {
+        const updSportCourt = await prisma.sportCourt.update({
+            where: { id: sportCourt.id },
+            data: sportCourt
+        })
+
+        return updSportCourt
+    }
+
     async create(data: Prisma.SportCourtCreateInput): Promise<SportCourt> {
         const sportCourt = await prisma.sportCourt.create({
             data

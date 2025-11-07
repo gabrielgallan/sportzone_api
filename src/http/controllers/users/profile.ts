@@ -3,7 +3,7 @@ import { ResourceNotFound } from "root/src/use-cases/errors/resource-not-found.t
 import { makeGetProfileUseCase } from "root/src/use-cases/factories/make-get-profile-use-case.ts"
 
 
-export async function getProfile(request: FastifyRequest, reply: FastifyReply) {
+export async function profile(request: FastifyRequest, reply: FastifyReply) {
     const userId = request.user.sub
     
     try {

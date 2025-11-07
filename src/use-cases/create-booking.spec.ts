@@ -221,4 +221,31 @@ describe('Create Booking Use Case', () => {
             })
         ).rejects.toBeInstanceOf(SportCourtDateUnavaliable)
     })
+
+    it("should not be able to create a booking if court its unavaliable", async () => {
+        vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
+
+        const sportCourt = await sportCourtsRepository.create({
+            title: 'Volei SportCourt',
+            type: 'Volei',
+            location: 'Shopping Jardim Sul Quadra',
+            latitude: -23.630180,
+            longitude: -46.735809,
+            price_per_hour: 20
+        })
+
+        await sportCourtsRepository.save({
+            ...sportCourt,
+            is_active: false
+        })
+
+        await expect(() =>
+            sut.execute({
+                userId: randomUUID(),
+                sportCourtId: sportCourt.id,
+                startTime: new Date(2025, 0, 13, 13, 0, 0),
+                endTime: new Date(2025, 0, 13, 16, 0, 0),
+            })
+        ).rejects.toBeInstanceOf(SportCourtDateUnavaliable)
+    })
 })

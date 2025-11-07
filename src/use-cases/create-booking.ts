@@ -38,6 +38,11 @@ export class CreateBookingUseCase {
             throw new ResourceNotFound()
         }
 
+        // Checking if Sport Court its avaliable to use
+        if (!sportCourt.is_active) {
+            throw new SportCourtDateUnavaliable()
+        }
+
         //Checking if time interval is chronologically correct
         const dateIsChronologicallyCorrect = startTimeJs.isBefore(endTimeJs)
 

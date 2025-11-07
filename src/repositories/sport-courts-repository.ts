@@ -6,4 +6,5 @@ export interface SportCourtsRepository {
     findById(id: string): Promise<SportCourt | null>
     searchManyBySportType(type: string, page: number): Promise<SportCourt[]>
     searchManyNearby(data: Cordinate, page: number): Promise<SportCourt[]>
+    save(sportCourt: SportCourt): Promise<SportCourt>
 }
