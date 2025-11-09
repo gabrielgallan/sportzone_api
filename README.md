@@ -12,6 +12,7 @@
 - [x] O usuário deve poder pesquisar quadras por endereço;
 - [x] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição;
 - [x] Deve ser possível desativar uma quadra sem previsão de retorno;
+- [ ] Deve ser possível reativar uma quadra;
 - [x] Deve ser possível restringir horários de uso das quadras;
 
 ## RN (Regras de negócio)

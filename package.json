@@ -8,7 +8,7 @@
     "build": "tsup src --out-dir build",
     "start": "node build/server.cjs",
     "test:unit": "vitest run --project unit",
-    "test:e2e": "vitest run --project e2e",
+    "test:e2e": "vitest --pool=threads run --project e2e",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui"
   },
@@ -28,6 +28,7 @@
     "vitest": "4.0.7"
   },
   "dependencies": {
+    "@fastify/cookie": "11.0.2",
     "@fastify/jwt": "10.0.0",
     "@prisma/client": "6.18.0",
     "axios": "1.13.1",

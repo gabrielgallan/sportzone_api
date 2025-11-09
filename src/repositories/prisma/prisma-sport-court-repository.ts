@@ -30,12 +30,18 @@ export class PrismaSportCourtsRepository implements SportCourtsRepository {
         return sportCourt
     }
 
-    async searchManyNearby(data: Cordinate, page: number) {
-        const sportCourts = await prisma.sportCourt.findMany()
+    async searchManyByCordinates (
+        cord: Cordinate, 
+        sportType: string | null, 
+        page: number
+    ) {
+        const sportCourts = sportType ? 
+            await prisma.sportCourt.findMany({ where: { type: sportType } }) : 
+            await prisma.sportCourt.findMany()
 
         const nearbySportCourts = sportCourts.filter(court => {
-            const distance = getDistanceBetweenCordinates(
-                { latitude: data.latitude, longitude: data.longitude },
+            const distance = getDistanceBetweenCordinates (
+                { latitude: cord.latitude, longitude: cord.longitude },
                 { latitude: court.latitude.toNumber(), longitude: court.longitude.toNumber() }
             )
 
@@ -43,20 +49,5 @@ export class PrismaSportCourtsRepository implements SportCourtsRepository {
         }).slice((page - 1) * 20, page * 20)
 
         return nearbySportCourts
-    }
-
-    async searchManyBySportType(type: string, page: number) {
-        const sportCourts = await prisma.sportCourt.findMany({
-            where: {
-                type: {
-                    contains: type,
-                    mode: 'insensitive', // ignora maiúsculas e minúsculas
-                },
-            },
-            skip: (page - 1) * 20, // pula os registros das páginas anteriores
-            take: 20,
-        })
-
-        return sportCourts
     }
 }

@@ -6,10 +6,18 @@ import { getDistanceBetweenCordinates, type Cordinate } from "root/src/utils/get
 export class InMemorySportCourtsRepository implements SportCourtsRepository {
     private items: SportCourt[] = []
     
-    async searchManyNearby(data: Cordinate, page: number) {
-        const nearbySportCourts = this.items.filter(court => {
+    async searchManyByCordinates (
+        cord: Cordinate, 
+        sportType: string | null, 
+        page: number
+    ) {
+        const sportCourts = sportType ? 
+            this.items.filter(c => c.type === sportType) : 
+            this.items
+
+        const nearbySportCourts = sportCourts.filter(court => {
             const distance = getDistanceBetweenCordinates(
-                { latitude: data.latitude, longitude: data.longitude },
+                { latitude: cord.latitude, longitude: cord.longitude },
                 { latitude: court.latitude.toNumber(), longitude: court.longitude.toNumber() }
             )
             
@@ -21,16 +29,6 @@ export class InMemorySportCourtsRepository implements SportCourtsRepository {
     
     async searchAll() {
         return this.items
-    }
-
-    async searchManyBySportType(type: string, page: number) {
-        const sportCourts = this.items
-        .filter(court => court.type.toLowerCase().includes(
-            type.toLowerCase()
-        ))
-        .slice((page - 1) * 20, page * 20)
-        
-        return sportCourts
     }
     
     async create(data: Prisma.SportCourtCreateInput) {

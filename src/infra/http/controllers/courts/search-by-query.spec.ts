@@ -40,15 +40,16 @@ describe('Search sport courts by location address (E2E)', async () => {
             })
 
 
-        const nearCourts = await request(app.server)
-            .post(`/sport-courts/search/location`)
+        const nearbyCourts = await request(app.server)
+            .post('/sport-courts/search')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 routeName: 'Rua Chico Pontes',
                 number: 921,
+                sportType: null,
                 page: 1
             }).expect(200)
 
-        expect(nearCourts.body.sportCourts).toHaveLength(1)
+        expect(nearbyCourts.body.sportCourts).toHaveLength(1)
     })
 })

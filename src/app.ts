@@ -1,6 +1,7 @@
 import fastify from 'fastify'
-import env from './env/config.ts'
 import fastifyJwt from '@fastify/jwt'
+import fastifyCookies from '@fastify/cookie'
+import env from './env/config.ts'
 import { ZodError } from 'zod'
 import { userRoutes } from './infra/http/controllers/users/routes.ts'
 import { courtRoutes } from './infra/http/controllers/courts/routes.ts'
@@ -10,6 +11,8 @@ const app = fastify()
 app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
 })
+
+app.register(fastifyCookies)
 
 app.register(userRoutes)
 app.register(courtRoutes)

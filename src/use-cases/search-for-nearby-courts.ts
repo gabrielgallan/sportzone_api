@@ -15,10 +15,13 @@ export class SearchForNearbyCourtsUseCase {
     constructor(private sportCourtsRepository: SportCourtsRepository) {}
 
     async execute({ userLatitude, userLongitude, page }: SearchForNearbyCourtsUseCaseRequest): Promise<SearchForNearbyCourtsUseCaseResponse> {
-        const sportCourts = await this.sportCourtsRepository.searchManyNearby({
+        const sportCourts = await this.sportCourtsRepository.searchManyByCordinates({
             latitude: userLatitude,
             longitude: userLongitude
-        }, page)
+        },
+            null,
+            page
+        )
 
         return {
             sportCourts,
