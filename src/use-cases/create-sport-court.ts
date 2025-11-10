@@ -2,6 +2,7 @@ import type { Prisma, SportCourt } from "@prisma/client";
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts";
 
 interface CreateSportCourtUseCaseRequest {
+    owner_id: string
     title: string
     type: string
     phone: string | null

@@ -4,8 +4,10 @@ import { ResourceNotFound } from "./errors/resource-not-found.ts"
 import type { CourtBlockedDatesRepository } from "../repositories/court-blocked-dates-repository.ts"
 import dayjs from "dayjs"
 import { IncorrectTimestampInterval } from "./errors/incorrect-timestamp-interval.ts"
+import { UnauthorizedToModifySportCourts } from "./errors/unauthorized-to-modify-court.ts"
 
 interface RestrictCourtDateUseCaseRequest {
+    userId: string,
     sportCourtId: string,
     startDate: Date,
     endDate: Date,
@@ -22,13 +24,17 @@ export class RestrictCourtDateUseCase {
         private courtBlockedDatesRepository: CourtBlockedDatesRepository
     ) { }
 
-    async execute({ sportCourtId, startDate, endDate, reason }: RestrictCourtDateUseCaseRequest): Promise<RestrictCourtDateUseCaseResponse> {
+    async execute({ userId, sportCourtId, startDate, endDate, reason }: RestrictCourtDateUseCaseRequest): Promise<RestrictCourtDateUseCaseResponse> {
         const sportCourt = await this.sportCourtsRepository.findById(sportCourtId)
         const startDateJs = dayjs(startDate)
         const endDateJs = dayjs(endDate)
 
         if (!sportCourt) {
             throw new ResourceNotFound()
+        }
+
+        if (sportCourt.owner_id !== userId) {
+            throw new UnauthorizedToModifySportCourts()
         }
 
         const dateIsChronologicallyCorrect = startDateJs.isBefore(endDateJs)

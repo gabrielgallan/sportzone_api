@@ -24,6 +24,7 @@ describe('Search courts by query (address, sport type) use case', () => {
     it('should be able to search courts by location address', async () => {
         // => Creating an example court far away of the address searched
         await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'SportCourt 1',
             type: 'Soccer',
             location: 'Shopping Jardim Sul',
@@ -34,6 +35,7 @@ describe('Search courts by query (address, sport type) use case', () => {
 
         // => Creating two example courts near of the address searched
         await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'SportCourt 2',
             type: 'Soccer',
             location: 'Shopping Center Norte',
@@ -44,6 +46,7 @@ describe('Search courts by query (address, sport type) use case', () => {
 
         // => Creating an example of volei sport court
         await sportCourtsRepository.create({
+            owner_id: 'owner-02',
             title: 'SportCourt 3',
             type: 'Volei',
             location: 'Ultra Academia - Vila Guilherme',

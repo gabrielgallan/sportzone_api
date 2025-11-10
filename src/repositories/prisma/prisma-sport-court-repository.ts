@@ -14,7 +14,7 @@ export class PrismaSportCourtsRepository implements SportCourtsRepository {
         return updSportCourt
     }
 
-    async create(data: Prisma.SportCourtCreateInput): Promise<SportCourt> {
+    async create(data: Prisma.SportCourtUncheckedCreateInput): Promise<SportCourt> {
         const sportCourt = await prisma.sportCourt.create({
             data
         })
@@ -36,8 +36,8 @@ export class PrismaSportCourtsRepository implements SportCourtsRepository {
         page: number
     ) {
         const sportCourts = sportType ? 
-            await prisma.sportCourt.findMany({ where: { type: sportType } }) : 
-            await prisma.sportCourt.findMany()
+            await prisma.sportCourt.findMany({ where: { type: sportType, is_active: true } }) : 
+            await prisma.sportCourt.findMany({ where: { is_active: true } })
 
         const nearbySportCourts = sportCourts.filter(court => {
             const distance = getDistanceBetweenCordinates (
