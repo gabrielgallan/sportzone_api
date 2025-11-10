@@ -1,20 +1,20 @@
-import type { Prisma, SportCourt } from "@prisma/client";
+import type { SportCourt } from "@prisma/client";
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts";
 import { ResourceNotFound } from "./errors/resource-not-found.ts";
 import { SportCourtAlreadyDisabled } from "./errors/sport-court-already-disabled.ts";
 
-interface DisableSportCourtUseCaseRequest {
+interface DisableSportCourtAvailabilityUseCaseRequest {
     sportCourtId: string
 }
 
-interface DisableSportCourtUseCaseResponse {
+interface DisableSportCourtAvailabilityUseCaseResponse {
     sportCourt: SportCourt
 }
 
-export class DisableSportCourtUseCase {
+export class DisableSportCourtAvailabilityUseCase {
     constructor(private sportCourtsRepository: SportCourtsRepository) {}
 
-    async execute({ sportCourtId }: DisableSportCourtUseCaseRequest): Promise<DisableSportCourtUseCaseResponse> {
+    async execute({ sportCourtId }: DisableSportCourtAvailabilityUseCaseRequest): Promise<DisableSportCourtAvailabilityUseCaseResponse> {
         const sportCourt = await this.sportCourtsRepository.findById(sportCourtId)
 
         if (!sportCourt) {

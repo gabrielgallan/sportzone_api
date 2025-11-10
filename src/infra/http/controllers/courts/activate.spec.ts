@@ -1,9 +1,9 @@
 import request from 'supertest'
 import app from 'root/src/app.ts'
-import { afterAll, beforeAll, describe, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { registerAndAuthenticateUser } from 'root/src/utils/test/register-and-authenticate-user.ts'
 
-describe('Disable sport court (E2E)', async () => {
+describe('Activate sport court (E2E)', async () => {
     beforeAll(async () => {
         await app.ready()
     })
@@ -12,7 +12,7 @@ describe('Disable sport court (E2E)', async () => {
         await app.close()
     })
 
-    it('should be able to disable a sport court', async () => {
+    it('should be able to activate sport court availability', async () => {
         const { token } = await registerAndAuthenticateUser(app, true)
 
         const createResponse = await request(app.server).post('/sport-courts')
@@ -29,8 +29,8 @@ describe('Disable sport court (E2E)', async () => {
         
         const { sportCourtId } = createResponse.body
 
-        const disableResponse = await request(app.server)
-            .patch(`/sport-courts/${sportCourtId}/availability`)
+        const activateResponse = await request(app.server)
+            .patch(`/sport-courts/${sportCourtId}/unavailability`)
             .set('Authorization', `Bearer ${token}`)
             .send().expect(204)
     })

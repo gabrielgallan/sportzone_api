@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import z, { string } from "zod";
-import { makeDisableSportCourtUseCase } from "root/src/use-cases/factories/make-disable-court-use-case.ts";
+import z from "zod";
+import { makeDisableSportCourtAvailabilityUseCase } from "root/src/use-cases/factories/make-disable-court-availability-use-case.ts";
 import { SportCourtAlreadyDisabled } from "root/src/use-cases/errors/sport-court-already-disabled.ts";
 import { ResourceNotFound } from "root/src/use-cases/errors/resource-not-found.ts";
 
@@ -12,7 +12,7 @@ export async function disable(request: FastifyRequest, reply: FastifyReply) {
     const { sportCourtId } = paramsSchema.parse(request.params)
 
     try {
-        const disableSportCourtUseCase = makeDisableSportCourtUseCase()
+        const disableSportCourtUseCase = makeDisableSportCourtAvailabilityUseCase()
 
         await disableSportCourtUseCase.execute({
             sportCourtId
