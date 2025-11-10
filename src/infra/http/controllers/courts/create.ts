@@ -21,7 +21,10 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 
     const createSportCourtUseCase = makeCreateSportCourtUseCase()
 
-    const { sportCourt } = await createSportCourtUseCase.execute(body)
+    const { sportCourt } = await createSportCourtUseCase.execute({
+        ...body,
+        owner_id: request.user.sub
+    })
 
     return reply.status(201).send({ sportCourtId: sportCourt.id })
 }

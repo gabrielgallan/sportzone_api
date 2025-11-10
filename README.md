@@ -8,9 +8,9 @@
 - [x] Deve ser possível confirmar uma reserva;
 - [x] Deve ser possível cancelar uma reserva depois de confirmada;
 - [x] Deve ser possível cadastrar uma quadra;
-- [x] O usuário deve poder listar quadras próximas a ele (Até 10km);
-- [x] O usuário deve poder pesquisar quadras por endereço;
-- [x] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição;
+- [ ] O usuário deve poder listar quadras próximas a ele (Até 10km) (ativas);
+- [ ] O usuário deve poder pesquisar quadras por endereço (ativas);
+- [ ] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição (ativas);
 - [x] Deve ser possível desativar uma quadra sem previsão de retorno;
 - [x] Deve ser possível reativar uma quadra;
 - [x] Deve ser possível restringir horários de uso das quadras;
@@ -35,3 +35,7 @@
 - [x] Todos os dados da aplicação devem ser paginados em até 20 items;
 - [x] O usuário deve ser identificado por um JWT (JSON Web Token);
 - [ ] A reserva deve ser confirmada em até 15 minutos por uma API de pagamento;
+
+# To Remember
+- Create Sport court use case tests;
+- 

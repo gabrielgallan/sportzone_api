@@ -2,8 +2,10 @@ import type { SportCourt } from "@prisma/client";
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts";
 import { ResourceNotFound } from "./errors/resource-not-found.ts";
 import { SportCourtAlreadyDisabled } from "./errors/sport-court-already-disabled.ts";
+import { UnauthorizedToModifySportCourts } from "./errors/unauthorized-to-modify-court.ts";
 
 interface DisableSportCourtAvailabilityUseCaseRequest {
+    userId: string
     sportCourtId: string
 }
 
@@ -14,11 +16,15 @@ interface DisableSportCourtAvailabilityUseCaseResponse {
 export class DisableSportCourtAvailabilityUseCase {
     constructor(private sportCourtsRepository: SportCourtsRepository) {}
 
-    async execute({ sportCourtId }: DisableSportCourtAvailabilityUseCaseRequest): Promise<DisableSportCourtAvailabilityUseCaseResponse> {
+    async execute({ userId, sportCourtId }: DisableSportCourtAvailabilityUseCaseRequest): Promise<DisableSportCourtAvailabilityUseCaseResponse> {
         const sportCourt = await this.sportCourtsRepository.findById(sportCourtId)
 
         if (!sportCourt) {
             throw new ResourceNotFound()
+        }
+
+        if (sportCourt.owner_id !== userId) {
+            throw new UnauthorizedToModifySportCourts()
         }
 
         if (!sportCourt.is_active) {

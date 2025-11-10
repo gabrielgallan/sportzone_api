@@ -39,6 +39,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -61,6 +62,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -90,6 +92,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 10, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -125,6 +128,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -154,6 +158,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -176,6 +181,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -198,6 +204,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',
@@ -226,6 +233,7 @@ describe('Create Booking Use Case', () => {
         vi.setSystemTime(new Date(2025, 0, 13, 7, 0, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'owner-01',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Shopping Jardim Sul Quadra',

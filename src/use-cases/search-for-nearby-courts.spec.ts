@@ -16,6 +16,7 @@ describe('Search for nearby courts use case', () => {
         // => Creating 2 courts far away user (+10 Km)
         for (let c = 0; c < 2; c++) {
             await sportCourtsRepository.create({
+                owner_id: 'owner-01',
                 title: 'Soccer SportCourt',
                 type: 'Soccer',
                 location: 'Shopping Jardim Sul Quadra',
@@ -27,6 +28,7 @@ describe('Search for nearby courts use case', () => {
 
         // => Creating one court nearby user
         await sportCourtsRepository.create({
+            owner_id: 'owner-02',
             title: 'Volei SportCourt',
             type: 'Volei',
             location: 'Vila Santa Monica Quadra',

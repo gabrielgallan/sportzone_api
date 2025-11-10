@@ -12,8 +12,10 @@ export class InMemorySportCourtsRepository implements SportCourtsRepository {
         page: number
     ) {
         const sportCourts = sportType ? 
-            this.items.filter(c => c.type === sportType) : 
-            this.items
+            this.items.filter(c => {
+                return (c.type === sportType) && (c.is_active)
+            }) : 
+            this.items.filter(c => c.is_active)
 
         const nearbySportCourts = sportCourts.filter(court => {
             const distance = getDistanceBetweenCordinates(
@@ -31,9 +33,10 @@ export class InMemorySportCourtsRepository implements SportCourtsRepository {
         return this.items
     }
     
-    async create(data: Prisma.SportCourtCreateInput) {
+    async create(data: Prisma.SportCourtUncheckedCreateInput) {
         const sportCourt = {
             id: data.id ?? randomUUID(),
+            owner_id: data.owner_id ?? randomUUID(),
             title: data.title,
             type: data.type,
             is_active: true,

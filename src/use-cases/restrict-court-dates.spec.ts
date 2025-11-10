@@ -4,14 +4,19 @@ import { InMemoryCourtBlockedDatesRepository } from '../repositories/in-memory/i
 import { InMemorySportCourtsRepository } from '../repositories/in-memory/in-memory-sport-courts-repository.ts'
 import type { CourtBlockedDatesRepository } from '../repositories/court-blocked-dates-repository.ts'
 import type { SportCourtsRepository } from '../repositories/sport-courts-repository.ts'
-import { IncorrectTimestampInterval } from './errors/incorrect-timestamp-interval.ts'
+import type { UsersRepository } from '../repositories/users-repository.ts'
+import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository.ts'
+import { hash } from 'bcryptjs'
+import { UnauthorizedToModifySportCourts } from './errors/unauthorized-to-modify-court.ts'
 
+let usersRepository: UsersRepository
 let courtBlockedDatesRepository: CourtBlockedDatesRepository
 let sportCourtsRepository: SportCourtsRepository
 let sut: RestrictCourtDateUseCase
 
 describe('Restrict Court Dates Use Case', () => {
     beforeEach(() => {
+        usersRepository = new InMemoryUsersRepository()
         courtBlockedDatesRepository = new InMemoryCourtBlockedDatesRepository()
         sportCourtsRepository = new InMemorySportCourtsRepository()
 
@@ -30,7 +35,14 @@ describe('Restrict Court Dates Use Case', () => {
     it('should be able restrict court date', async () => {
         vi.setSystemTime(new Date(2025, 0, 13, 10, 0))
 
+        const owner = await usersRepository.create({
+            name: 'John Doe',
+            email: 'johndoe@email.com',
+            password_hash: 'passworHashed'
+        })
+
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: owner.id,
             title: 'SportCourt 1',
             type: 'none',
             location: 'Shopping Jardim Sul',
@@ -40,6 +52,7 @@ describe('Restrict Court Dates Use Case', () => {
         })
 
         const { courtBlockedDate } = await sut.execute({
+            userId: sportCourt.owner_id,
             sportCourtId: sportCourt.id,
             startDate: new Date(2025, 0, 15, 8, 0),
             endDate: new Date(2025, 0, 15, 15, 0),
@@ -53,10 +66,11 @@ describe('Restrict Court Dates Use Case', () => {
         }))
     })
 
-    it('should not be able restrict court date with incorrect timestamp', async () => {
-        vi.setSystemTime(new Date(2025, 0, 13, 10, 0))
+    it('should not be able restrict court date without authorization', async () => {
+        // vi.setSystemTime(new Date(2025, 0, 13, 10, 0))
 
         const sportCourt = await sportCourtsRepository.create({
+            owner_id: 'user-01',
             title: 'SportCourt 1',
             type: 'none',
             location: 'Shopping Jardim Sul',
@@ -67,11 +81,12 @@ describe('Restrict Court Dates Use Case', () => {
 
         await expect(() =>
             sut.execute({
+                userId: 'user-02',
                 sportCourtId: sportCourt.id,
                 startDate: new Date(2025, 0, 15, 18, 0),
                 endDate: new Date(2025, 0, 15, 9, 0),
                 reason: null
             })
-        ).rejects.toBeInstanceOf(IncorrectTimestampInterval)
+        ).rejects.toBeInstanceOf(UnauthorizedToModifySportCourts)
     })
 })

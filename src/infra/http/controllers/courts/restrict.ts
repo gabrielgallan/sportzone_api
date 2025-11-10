@@ -3,6 +3,7 @@ import z from "zod";
 import { makeRestrictCourtDateUseCase } from "root/src/use-cases/factories/make-restrict-court-dates-use-case.ts";
 import { ResourceNotFound } from "root/src/use-cases/errors/resource-not-found.ts";
 import { IncorrectTimestampInterval } from "root/src/use-cases/errors/incorrect-timestamp-interval.ts";
+import { UnauthorizedToModifySportCourts } from "root/src/use-cases/errors/unauthorized-to-modify-court.ts";
 
 export async function restrict(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
@@ -22,6 +23,7 @@ export async function restrict(request: FastifyRequest, reply: FastifyReply) {
         const restrictCourtDateUseCase = makeRestrictCourtDateUseCase()
 
         const { courtBlockedDate } = await restrictCourtDateUseCase.execute({
+            userId: request.user.sub,
             sportCourtId,
             startDate,
             endDate,
@@ -34,6 +36,10 @@ export async function restrict(request: FastifyRequest, reply: FastifyReply) {
     } catch (err) {
         if (err instanceof ResourceNotFound) {
             return reply.status(404).send({ error: err.message })
+        }
+
+        if (err instanceof UnauthorizedToModifySportCourts) {
+            return reply.status(401).send({ error: err.message })
         }
 
         if (err instanceof IncorrectTimestampInterval) {

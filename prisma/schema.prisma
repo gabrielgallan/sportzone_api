@@ -19,32 +19,29 @@ enum UserRole {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String       @id @default(uuid())
   name          String
-  email         String   @unique
+  email         String       @unique
   password_hash String
-  role          UserRole @default(MEMBER)
-  created_at    DateTime @default(now())
-
-  bookings Booking[]
+  role          UserRole     @default(MEMBER)
+  created_at    DateTime     @default(now())
+  bookings      Booking[]
+  sport_courts  SportCourt[]
 
   @@map("users")
 }
 
 model Booking {
-  id         String        @id @default(uuid())
-  start_time DateTime
-  end_time   DateTime
-  created_at DateTime      @default(now())
-  status     BookingStatus @default(PENDING)
-
-  user    User   @relation(fields: [user_id], references: [id])
-  user_id String
-
-  sportCourt    SportCourt @relation(fields: [sportCourt_id], references: [id])
+  id            String        @id @default(uuid())
+  start_time    DateTime
+  end_time      DateTime
+  created_at    DateTime      @default(now())
+  status        BookingStatus @default(PENDING)
+  user          User          @relation(fields: [user_id], references: [id])
+  user_id       String
+  sportCourt    SportCourt    @relation(fields: [sportCourt_id], references: [id])
   sportCourt_id String
-
-  payment Payment?
+  payment       Payment?
 
   @@map("bookings")
 }
@@ -63,37 +60,35 @@ model Payment {
   amount       Decimal
   created_at   DateTime  @default(now())
   validated_at DateTime?
-
-  booking    Booking @relation(fields: [booking_id], references: [id])
-  booking_id String  @unique
+  booking      Booking   @relation(fields: [booking_id], references: [id])
+  booking_id   String    @unique
 
   @@map("payments")
 }
 
 model SportCourt {
-  id             String  @id @default(uuid())
-  title          String
-  type           String
-  phone          String?
-  location       String
-  latitude       Decimal
-  longitude      Decimal
-  is_active      Boolean @default(true)
-  price_per_hour Decimal
-
-  bookings Booking[]
-
+  id                  String             @id @default(uuid())
+  title               String
+  type                String
+  phone               String?
+  location            String
+  latitude            Decimal
+  longitude           Decimal
+  is_active           Boolean            @default(true)
+  price_per_hour      Decimal
+  bookings            Booking[]
   court_blocked_dates CourtBlockedDate[]
+  owner               User               @relation(fields: [owner_id], references: [id])
+  owner_id            String
 
   @@map("sport_courts")
 }
 
 model CourtBlockedDate {
-  id         String   @id @default(uuid())
-  start_time DateTime
-  end_time   DateTime
-  reason     String?
-
+  id            String     @id @default(uuid())
+  start_time    DateTime
+  end_time      DateTime
+  reason        String?
   sportCourt    SportCourt @relation(fields: [sportCourt_id], references: [id])
   sportCourt_id String
 
