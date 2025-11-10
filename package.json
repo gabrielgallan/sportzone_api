@@ -8,9 +8,10 @@
     "build": "tsup src --out-dir build",
     "start": "node build/server.cjs",
     "test:unit": "vitest run --project unit",
-    "test:e2e": "vitest --pool=forks run --project e2e",
-    "test:coverage": "vitest --coverage",
-    "test:ui": "vitest --ui"
+    "test:e2e": "vitest --pool=forks run --project e2e --silent",
+    "test:unit:coverage": "vitest --project unit --coverage",
+    "test:e2e:coverage": "vitest --project e2e --coverage",
+    "test:unit:ui": "vitest --project unit --ui"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,8 @@
   "devDependencies": {
     "@types/node": "24.9.2",
     "@types/supertest": "6.0.3",
+    "@vitest/coverage-v8": "4.0.7",
+    "@vitest/ui": "4.0.7",
     "prisma": "6.18.0",
     "supertest": "7.1.4",
     "tsup": "8.5.0",
