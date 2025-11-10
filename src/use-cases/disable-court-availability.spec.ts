@@ -1,19 +1,19 @@
 import { it, describe, expect, beforeEach } from 'vitest'
 import type { SportCourtsRepository } from '../repositories/sport-courts-repository.ts'
 import { InMemorySportCourtsRepository } from '../repositories/in-memory/in-memory-sport-courts-repository.ts'
-import { DisableSportCourtUseCase } from './disable-court.ts'
+import { DisableSportCourtAvailabilityUseCase } from './disable-court-availability.ts'
 import { SportCourtAlreadyDisabled } from './errors/sport-court-already-disabled.ts'
 
 let sportCourtsRepository: SportCourtsRepository
-let sut: DisableSportCourtUseCase
+let sut: DisableSportCourtAvailabilityUseCase
 
-describe('Disable sport court Use Case', () => {
+describe('Disable sport court availability Use Case', () => {
     beforeEach(() => {
         sportCourtsRepository = new InMemorySportCourtsRepository()
-        sut = new DisableSportCourtUseCase(sportCourtsRepository)
+        sut = new DisableSportCourtAvailabilityUseCase(sportCourtsRepository)
     })
 
-    it('should be able to disable sport court', async () => {
+    it('should be able to disable sport court availability', async () => {
         const sportCourt = await sportCourtsRepository.create({
             title: 'Volei SportCourt',
             type: 'Volei',
@@ -31,7 +31,7 @@ describe('Disable sport court Use Case', () => {
         expect(sportCourt.is_active).toBe(false)
     })
 
-    it('should not be able to disable a sport court already disabled', async () => {
+    it('should not be able to disable a sport court already unavailable', async () => {
         const sportCourt = await sportCourtsRepository.create({
             title: 'Volei SportCourt',
             type: 'Volei',
