@@ -13,9 +13,9 @@ describe('Restrict sport court date (E2E)', async () => {
     })
 
     it('should be able to restrict sport court date', async () => {
-        const { token } = await registerAndAuthenticateUser(app)
+        const { token } = await registerAndAuthenticateUser(app, true)
 
-        const response = await request(app.server).post('/sport-courts')
+        const createResponse = await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'Soccer SportCourt',
@@ -27,9 +27,9 @@ describe('Restrict sport court date (E2E)', async () => {
                 price_per_hour: 20
             })
 
-        const { sportCourtId } = response.body
+        const { sportCourtId } = createResponse.body
 
-        await request(app.server)
+        const response = await request(app.server)
             .post(`/sport-courts/${sportCourtId}/restriction`)
             .set('Authorization', `Bearer ${token}`)
             .send({
@@ -37,5 +37,15 @@ describe('Restrict sport court date (E2E)', async () => {
                 endDate: new Date(2025, 10, 10, 18, 0),
                 reason: ''
             }).expect(201)
+
+        expect(response.body).toEqual(expect.objectContaining({
+            courtBlockedDate: {
+                id: expect.any(String),
+                reason: '',
+                start_time: expect.any(String),
+                end_time: expect.any(String),
+                sportCourt_id: expect.any(String)
+            }
+        }))
     })
 })

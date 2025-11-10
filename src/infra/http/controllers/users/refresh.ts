@@ -4,22 +4,36 @@ export async function refresh(
     request: FastifyRequest,
     reply: FastifyReply
 ) {
-    await request.jwtVerify({ onlyCookie: true })
+    try {
+        await request.jwtVerify({ onlyCookie: true })
+    } catch (err) {
+        return reply.status(401).send({ error: 'Unauthorized, session expired!' })
+    }
 
-    const userId = request.user.sub
+    const { role, sub } = request.user
 
-    const token = await reply.jwtSign({}, {
-        sign: {
-            sub: userId
+    const token = await reply.jwtSign(
+        {
+            role,
+        },
+        {
+            sign: {
+                sub,
+            }
         }
-    })
+    )
 
-    const refreshToken = await reply.jwtSign({}, {
-        sign: {
-            sub: userId,
-            expiresIn: '7d'
+    const refreshToken = await reply.jwtSign(
+        {
+            role,
+        },
+        {
+            sign: {
+                sub,
+                expiresIn: '7d'
+            }
         }
-    })
+    )
 
     return reply
         .setCookie('refreshToken', refreshToken, {

@@ -13,7 +13,7 @@ describe('Search for nearby sport courts (E2E)', async () => {
     })
 
     it('should be able to search for nearby sport courts', async () => {
-        const { token } = await registerAndAuthenticateUser(app)
+        const { token } = await registerAndAuthenticateUser(app ,true)
 
         await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
@@ -40,14 +40,24 @@ describe('Search for nearby sport courts (E2E)', async () => {
             }).expect(201)
 
         const nearbyCourtsResponse = await request(app.server)
-            .post('/sport-courts/search/nearby')
+            .get('/sport-courts/search/nearby')
             .set('Authorization', `Bearer ${token}`)
-            .send({
+            .query({
                 userLatitude: -23.6140472,
                 userLongitude: -46.7413994,
                 page: 1
-            }).expect(200)
+            })
+            .send().expect(200)
         
         expect(nearbyCourtsResponse.body.sportCourts).toHaveLength(1)
+        expect(nearbyCourtsResponse.body.sportCourts[0])
+            .toEqual(expect.objectContaining({
+                title: 'Volei SportCourt',
+                type: 'Volei',
+                location: 'Vila Santa Monica Quadra',
+                latitude: '-23.63018',
+                longitude: '-46.735809',
+                price_per_hour: '20'
+            }))
     })
 })

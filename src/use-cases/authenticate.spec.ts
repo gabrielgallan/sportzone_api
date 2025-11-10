@@ -21,12 +21,15 @@ describe('Authenticate Use Case', () => {
             password_hash: await hash('123456', 6)
         })
 
-        const { userId } = await sut.execute({
+        const { user } = await sut.execute({
             email: 'gabriel@email.com',
             password: '123456'
         })
 
-        expect(userId).toBe(userCreated.id)
+        expect(user).toEqual(expect.objectContaining({
+            name: 'Gabriel',
+            email: 'gabriel@email.com',
+        }))
     })
 
     it("should not be able to authenticate with an e-mail doesn't exists", async () => {

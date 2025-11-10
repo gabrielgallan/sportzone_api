@@ -5,14 +5,14 @@ import { AddressNotFound } from "root/src/infra/external/locationiq/errors/addre
 import { LocationIqServerError } from "root/src/infra/external/locationiq/errors/locationiq-server-error.ts";
 
 export async function query(request: FastifyRequest, reply: FastifyReply) {
-    const bodySchema = z.object({
+    const querySchema = z.object({
         routeName: z.string().nonempty(),
         number: z.coerce.number(),
-        sportType: z.string().nullable(),
+        sportType: z.string().optional(),
         page: z.coerce.number().min(1).default(1)
     })
 
-    const { routeName, number, sportType, page } = bodySchema.parse(request.body)
+    const { routeName, number, sportType, page } = querySchema.parse(request.query)
 
     try {
         const searchCourtsByQueryUseCase = makeSearchCourtsByQueryUseCase()
@@ -20,7 +20,7 @@ export async function query(request: FastifyRequest, reply: FastifyReply) {
         const { sportCourts } = await searchCourtsByQueryUseCase.execute({
             routeName,
             number,
-            sportType,
+            sportType: sportType ?? null,
             page
         })
 

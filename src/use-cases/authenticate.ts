@@ -9,7 +9,7 @@ interface AuthenticateUseCaseRequest {
 }
 
 interface AuthenticateUseCaseResponse {
-    userId: string
+    user: User
 }
 
 export class AuthenticateUseCase {
@@ -28,6 +28,6 @@ export class AuthenticateUseCase {
             throw new InvalidCredentialsError()
         }
 
-        return { userId: userWithInformedEmail.id }
+        return { user: userWithInformedEmail }
     }
 }

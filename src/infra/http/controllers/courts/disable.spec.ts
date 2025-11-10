@@ -13,7 +13,7 @@ describe('Disable sport court (E2E)', async () => {
     })
 
     it('should be able to disable a sport court', async () => {
-        const { token } = await registerAndAuthenticateUser(app)
+        const { token } = await registerAndAuthenticateUser(app, true)
 
         const createResponse = await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)

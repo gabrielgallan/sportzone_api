@@ -3,7 +3,7 @@ import app from 'root/src/app.ts'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { registerAndAuthenticateUser } from 'root/src/utils/test/register-and-authenticate-user.ts'
 
-describe('Search sport courts by location address (E2E)', async () => {
+describe('Search sport courts by queries (E2E)', async () => {
     beforeAll(async () => {
         await app.ready()
     })
@@ -12,14 +12,15 @@ describe('Search sport courts by location address (E2E)', async () => {
         await app.close()
     })
 
-    it('should be able to search sport courts by location address', async () => {
-        const { token } = await registerAndAuthenticateUser(app)
+    it('should be able to search sport courts by location address and sport type', async () => {
+        const { token } = await registerAndAuthenticateUser(app, true)  
 
+        // => Far away
         await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'SportCourt 1',
-                type: 'none',
+                type: 'Soccer',
                 location: 'Shopping Jardim Sul',
                 phone: '',
                 latitude: -23.6305222,
@@ -27,11 +28,12 @@ describe('Search sport courts by location address (E2E)', async () => {
                 price_per_hour: 20
             })
 
+        // => Nearby
         await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'SportCourt 2',
-                type: 'none',
+                type: 'Basketball',
                 location: 'Shopping Center Norte',
                 phone: '',
                 latitude: -23.5159715,
@@ -39,16 +41,30 @@ describe('Search sport courts by location address (E2E)', async () => {
                 price_per_hour: 20
             })
 
-
-        const nearbyCourts = await request(app.server)
-            .post('/sport-courts/search')
+        // => Nearby
+        await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
+                title: 'SportCourt 3',
+                type: 'Soccer',
+                location: 'Holiday Inn Anhembi',
+                phone: '',
+                latitude: -23.5167237,
+                longitude: -46.6388427,
+                price_per_hour: 20
+            })
+
+
+        const nearbyCourts = await request(app.server)
+            .get('/sport-courts/search')
+            .set('Authorization', `Bearer ${token}`)
+            .query({
                 routeName: 'Rua Chico Pontes',
                 number: 921,
-                sportType: null,
+                sportType: 'Soccer',
                 page: 1
-            }).expect(200)
+            })
+            .send().expect(200)
 
         expect(nearbyCourts.body.sportCourts).toHaveLength(1)
     })

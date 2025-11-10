@@ -3,17 +3,17 @@ import z from "zod";
 import { makeSearchForNearbyCourtsUseCase } from "root/src/use-cases/factories/make-search-for-nearby-courts-use-case.ts";
 
 export async function nearby(request: FastifyRequest, reply: FastifyReply) {
-    const bodySchema = z.object({
-        userLatitude: z.number().refine(value => {
+    const querySchema = z.object({
+        userLatitude: z.coerce.number().refine(value => {
             return Math.abs(value) <= 90
         }),
-        userLongitude: z.number().refine(value => {
+        userLongitude: z.coerce.number().refine(value => {
             return Math.abs(value) <= 180
         }),
         page: z.coerce.number().min(1).default(1)
     })
 
-    const { userLatitude, userLongitude, page } = bodySchema.parse(request.body)
+    const { userLatitude, userLongitude, page } = querySchema.parse(request.query)
 
     const searchForNearbyCourtsUseCase = makeSearchForNearbyCourtsUseCase()
 

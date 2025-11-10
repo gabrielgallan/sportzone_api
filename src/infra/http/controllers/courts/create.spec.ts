@@ -13,9 +13,9 @@ describe('Create Sport court (E2E)', async () => {
     })
 
     it('should be able to create a sport court', async () => {
-        const { token } = await registerAndAuthenticateUser(app)
+        const { token } = await registerAndAuthenticateUser(app, true)
 
-        await request(app.server).post('/sport-courts')
+        const response = await request(app.server).post('/sport-courts')
             .set('Authorization', `Bearer ${token}`)
             .send({
                 title: 'Soccer SportCourt',
@@ -26,5 +26,9 @@ describe('Create Sport court (E2E)', async () => {
                 longitude: -46.735809,
                 price_per_hour: 20
             }).expect(201)
+        
+        expect(response.body).toEqual(expect.objectContaining({
+            sportCourtId: expect.any(String)
+        }))
     })
 })
