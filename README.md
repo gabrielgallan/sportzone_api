@@ -26,7 +26,7 @@
 - [x] Para a reserva ser confirmada deve haver o pagamento em até 20 minutos (via pix ou cartão);
 - [ ] Se a reserva for cancelada o valor deve ser reembolsado;
 - [x] A reserva só pode ser cancelada com no mínimo 2 horas de antecedencia;
-- [ ] As quadras só podem ser cadastradas por administradores;
+- [x] As quadras só podem ser cadastradas por administradores;
 
 ## RNFs (Requisitos não funcionais)
 
