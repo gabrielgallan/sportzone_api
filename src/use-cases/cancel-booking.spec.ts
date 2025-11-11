@@ -30,6 +30,7 @@ describe('Cancel a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 14, 0, 0),
             end_time: new Date(2025, 0, 13, 16, 0, 0),
+            price: 60
         })
 
         await bookingRepository.save({
@@ -52,6 +53,7 @@ describe('Cancel a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 14, 0, 0),
             end_time: new Date(2025, 0, 13, 16, 0, 0),
+            price: 60
         })
 
         await bookingRepository.save({
@@ -76,6 +78,7 @@ describe('Cancel a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 14, 0, 0),
             end_time: new Date(2025, 0, 13, 16, 0, 0),
+            price: 60
         })
 
         vi.setSystemTime(new Date(2025, 0, 13, 13, 30))

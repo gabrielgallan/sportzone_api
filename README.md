@@ -8,9 +8,9 @@
 - [x] Deve ser possível confirmar uma reserva;
 - [x] Deve ser possível cancelar uma reserva depois de confirmada;
 - [x] Deve ser possível cadastrar uma quadra;
-- [ ] O usuário deve poder listar quadras próximas a ele (Até 10km) (ativas);
-- [ ] O usuário deve poder pesquisar quadras por endereço (ativas);
-- [ ] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição (ativas);
+- [x] O usuário deve poder listar quadras próximas a ele (Até 10km) (ativas);
+- [x] O usuário deve poder pesquisar quadras por endereço (ativas);
+- [x] O usuário deve poder pesquisar quadras pelo tipo de esporte na descrição (ativas);
 - [x] Deve ser possível desativar uma quadra sem previsão de retorno;
 - [x] Deve ser possível reativar uma quadra;
 - [x] Deve ser possível restringir horários de uso das quadras;

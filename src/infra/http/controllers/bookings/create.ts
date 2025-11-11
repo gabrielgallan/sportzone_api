@@ -5,23 +5,37 @@ import { makeCreateBookingUseCase } from "root/src/use-cases/factories/make-crea
 import { ResourceNotFound } from "root/src/use-cases/errors/resource-not-found.ts";
 import { InvalidTimestampBookingInterval } from "root/src/use-cases/errors/invalid-timestamp-booking-interval.ts";
 import { SportCourtDateUnavaliable } from "root/src/use-cases/errors/sport-courts-date-unavaliable.ts";
+import { makeCreatePaymentUseCase } from "root/src/use-cases/factories/make-create-payment-use-case.ts";
 
-export async function createBooking(request: FastifyRequest, reply: FastifyReply) {
+export async function create(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
-        userId: z.string(),
-        sportCourtId: z.string(),
         startTime: z.date(),
         endTime: z.date()
     })
 
-    const body = bodySchema.parse(request.body)
+    const paramsSchema = z.object({
+        sportCourtId: z.string().uuid()
+    })
+
+    const { startTime, endTime } = bodySchema.parse(request.body)
+    const { sportCourtId } = paramsSchema.parse(request.params)
     
     try {
         const createBookingUseCase = makeCreateBookingUseCase()
+        const createPaymentUseCase = makeCreatePaymentUseCase()
 
-        const { booking } = await createBookingUseCase.execute(body)
+        const { booking } = await createBookingUseCase.execute({
+            userId: request.user.sub,
+            sportCourtId,
+            startTime,
+            endTime
+        })
 
-        return reply.status(201).send({ status: 'Booking created!' })
+        const { sessionUrl } = await createPaymentUseCase.execute({
+            booking
+        })
+
+        return reply.status(201).send({ sessionUrl })
     } catch (err) {
         if (err instanceof ResourceNotFound) {
             return reply.status(404).send({ error: err.message })    

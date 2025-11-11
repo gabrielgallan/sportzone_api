@@ -7,6 +7,7 @@ import { SportCourtDateUnavaliable } from "./errors/sport-courts-date-unavaliabl
 import dayjs from "dayjs"
 import { InvalidTimestampBookingInterval } from "./errors/invalid-timestamp-booking-interval.ts"
 import type { CourtBlockedDatesRepository } from "../repositories/court-blocked-dates-repository.ts"
+import { CalculateBookingPrice } from "../utils/calculate-booking-value.ts"
 
 interface CreateBookingUseCaseRequest {
     userId: string,
@@ -96,11 +97,20 @@ export class CreateBookingUseCase {
             throw new SportCourtDateUnavaliable()
         }
 
+        const courtPerHourPrice = sportCourt.price_per_hour.toNumber()
+
+        const totalPrice = CalculateBookingPrice(
+            startTime,
+            endTime,
+            courtPerHourPrice
+        )
+
         const newBooking = await this.bookingRepository.create({
             user_id: userId,
             sportCourt_id: sportCourtId,
             start_time: startTime,
-            end_time: endTime
+            end_time: endTime,
+            price: totalPrice
         })
 
         return {

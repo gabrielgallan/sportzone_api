@@ -31,7 +31,8 @@ describe("Fetch user bookings history use case", () => {
                 user_id: userCreated.id,
                 sportCourt_id: `court-${c}`,
                 start_time: new Date(2025, 0, 13, 10, 0, 0),
-                end_time: new Date(2025, 0, 13, 14, 0, 0)
+                end_time: new Date(2025, 0, 13, 14, 0, 0),
+                price: 60
             })
         }
 

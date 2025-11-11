@@ -32,16 +32,20 @@ model User {
 }
 
 model Booking {
-  id            String        @id @default(uuid())
-  start_time    DateTime
-  end_time      DateTime
-  created_at    DateTime      @default(now())
-  status        BookingStatus @default(PENDING)
-  user          User          @relation(fields: [user_id], references: [id])
-  user_id       String
-  sportCourt    SportCourt    @relation(fields: [sportCourt_id], references: [id])
+  id         String        @id @default(uuid())
+  start_time DateTime
+  end_time   DateTime
+  created_at DateTime      @default(now())
+  status     BookingStatus @default(PENDING)
+  price      Decimal
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  sportCourt    SportCourt @relation(fields: [sportCourt_id], references: [id])
   sportCourt_id String
-  payment       Payment?
+
+  payment Payment?
 
   @@map("bookings")
 }
@@ -55,8 +59,8 @@ enum BookingStatus {
 
 model Payment {
   id           String    @id @default(uuid())
-  method       String
-  external_id  String
+  method       String?
+  external_id  String?
   amount       Decimal
   created_at   DateTime  @default(now())
   validated_at DateTime?

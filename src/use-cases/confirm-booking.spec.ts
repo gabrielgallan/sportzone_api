@@ -31,6 +31,7 @@ describe('Confirm a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 14, 0, 0),
             end_time: new Date(2025, 0, 13, 16, 0, 0),
+            price: 60
         })
 
         const { booking } = await sut.execute({
@@ -54,6 +55,7 @@ describe('Confirm a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 10, 0, 0),
             end_time: new Date(2025, 0, 13, 13, 0, 0),
+            price: 60
         })
 
         await sut.execute({
@@ -75,6 +77,7 @@ describe('Confirm a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 10, 0, 0),
             end_time: new Date(2025, 0, 13, 13, 0, 0),
+            price: 60
         })
 
         const twentyOneMinutesInMs = 1000 * 60 * 21

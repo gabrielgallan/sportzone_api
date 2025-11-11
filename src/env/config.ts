@@ -6,7 +6,8 @@ const envSchema = z.object({
     PORT: z.coerce.number().default(3000),
     DATABASE_URL: z.string(),
     LOCATIONIQ_API_KEY: z.string(),
-    JWT_SECRET: z.string()
+    JWT_SECRET: z.string(),
+    STRIPE_SECRET_API_KEY: z.string()
 })
 
 const _env = envSchema.safeParse(process.env)

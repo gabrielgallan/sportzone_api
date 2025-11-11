@@ -42,6 +42,9 @@ export class PrismaBookingsRepository implements BookingsRepository {
                 created_at: {
                     gte: startOfDay,
                     lte: endOfDay
+                },
+                status: {
+                    in: ['CONFIRMED', 'PENDING']
                 }
             }
         })
@@ -54,7 +57,10 @@ export class PrismaBookingsRepository implements BookingsRepository {
             where: {
                 sportCourt_id: sportCourtId,
                 start_time: { lt: endTime },
-                end_time: { gt: startTime }
+                end_time: { gt: startTime },
+                status: {
+                    in: ['CONFIRMED', 'PENDING']
+                }
             }
         })
 

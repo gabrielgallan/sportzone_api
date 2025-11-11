@@ -5,6 +5,7 @@ import env from './env/config.ts'
 import { ZodError } from 'zod'
 import { userRoutes } from './infra/http/controllers/users/routes.ts'
 import { courtRoutes } from './infra/http/controllers/courts/routes.ts'
+import { bookingsRoutes } from './infra/http/controllers/bookings/routes.ts'
 
 const app = fastify()
 
@@ -23,6 +24,7 @@ app.register(fastifyCookies)
 
 app.register(userRoutes)
 app.register(courtRoutes)
+app.register(bookingsRoutes)
 
 app.setErrorHandler((error, request, reply) => {
     if (error instanceof ZodError) {

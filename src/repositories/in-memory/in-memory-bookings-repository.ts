@@ -2,10 +2,28 @@ import { type Prisma, type Booking, BookingStatus } from "@prisma/client"
 import type { BookingsRepository } from "../bookings-repository.ts"
 import { randomUUID } from "crypto"
 import dayjs from "dayjs"
+import { Decimal } from "@prisma/client/runtime/library"
 
 
 export class InMemoryBookingsRepository implements BookingsRepository {
     private items: Booking[] = []
+
+    async create(data: Prisma.BookingUncheckedCreateInput): Promise<Booking> {
+        const booking = {
+            id: data.id ?? randomUUID(),
+            start_time: new Date(data.start_time),
+            end_time: new Date(data.end_time),
+            sportCourt_id: data.sportCourt_id,
+            user_id: data.user_id,
+            price: new Decimal(data.price.toString()),
+            status: data.status ?? BookingStatus.PENDING,
+            created_at: new Date()
+        }
+
+        this.items.push(booking)
+
+        return booking
+    }
 
     async save(booking: Booking) {
         const bookingIndex = this.items.findIndex(b => b.id === booking.id)
@@ -34,7 +52,11 @@ export class InMemoryBookingsRepository implements BookingsRepository {
     }
 
     async findBySportCourtIdOnInterval(sporCourt_id: string, startDate: Date, endDate: Date) {
-        const bookingInTheSameInterval = this.items.find(b =>
+        const confirmedBookings = this.items.filter(b => {
+            return ['CONFIRMED', 'PENDING'].includes(b.status)
+        })
+
+        const bookingInTheSameInterval = confirmedBookings.find(b =>
             b.sportCourt_id === sporCourt_id &&
             b.start_time < endDate &&
             b.end_time > startDate
@@ -50,6 +72,8 @@ export class InMemoryBookingsRepository implements BookingsRepository {
         const endOfTheDay = dayjs(date).endOf('date')
 
         const bookingOnSameDate = this.items.find((booking) => {
+            if (!['CONFIRMED', 'PENDING'].includes(booking.status)) return false
+
             const bookingInDate = dayjs(booking.created_at)
             const isOnSameDate =
                 bookingInDate.isAfter(startOfTheDay) && bookingInDate.isBefore(endOfTheDay)
@@ -62,19 +86,4 @@ export class InMemoryBookingsRepository implements BookingsRepository {
         return bookingOnSameDate
     }
 
-    async create(data: Prisma.BookingUncheckedCreateInput): Promise<Booking> {
-        const booking = {
-            id: data.id ?? randomUUID(),
-            start_time: new Date(data.start_time),
-            end_time: new Date(data.end_time),
-            sportCourt_id: data.sportCourt_id,
-            user_id: data.user_id,
-            status: BookingStatus.PENDING,
-            created_at: new Date()
-        }
-
-        this.items.push(booking)
-
-        return booking
-    }
 }
