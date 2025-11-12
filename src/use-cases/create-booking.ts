@@ -3,11 +3,13 @@ import type { BookingsRepository } from "../repositories/bookings-repository.ts"
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts"
 import { ResourceNotFound } from "./errors/resource-not-found.ts"
 import { MaxBookingsPerDayError } from "./errors/max-bookings-per-day-error.ts"
-import { SportCourtDateUnavaliable } from "./errors/sport-courts-date-unavaliable.ts"
+import { SportCourtDateAlreadyOccupied } from "./errors/sport-courts-date-already-occupied.ts"
 import dayjs from "dayjs"
 import { InvalidTimestampBookingInterval } from "./errors/invalid-timestamp-booking-interval.ts"
 import type { CourtBlockedDatesRepository } from "../repositories/court-blocked-dates-repository.ts"
 import { CalculateBookingPrice } from "../utils/calculate-booking-value.ts"
+import { SportCourtDateBlocked } from "./errors/sport-court-date-blocked.ts"
+import { SportCourtUnavailable } from "./errors/sport-court-unavailable.ts"
 
 interface CreateBookingUseCaseRequest {
     userId: string,
@@ -41,7 +43,7 @@ export class CreateBookingUseCase {
 
         // Checking if Sport Court its avaliable to use
         if (!sportCourt.is_active) {
-            throw new SportCourtDateUnavaliable()
+            throw new SportCourtUnavailable()
         }
 
         //Checking if time interval is chronologically correct
@@ -83,7 +85,7 @@ export class CreateBookingUseCase {
         )
         
         if (courtItsAlreadyOccupied) {
-            throw new SportCourtDateUnavaliable()
+            throw new SportCourtDateAlreadyOccupied()
         }
         
         // Checking if court it's blocked on date
@@ -94,7 +96,7 @@ export class CreateBookingUseCase {
         )
 
         if (courtItsBlockedOnDate) {
-            throw new SportCourtDateUnavaliable()
+            throw new SportCourtDateBlocked(courtItsBlockedOnDate.reason)
         }
 
         const courtPerHourPrice = sportCourt.price_per_hour.toNumber()

@@ -1,12 +1,11 @@
 import stripe from "root/src/lib/stripe.ts";
 import type { CreateChekoutSessionRequest, IPaymentServices } from "../payments-services.ts";
-import { id } from "zod/locales";
 
 export class StripePaymentServices implements IPaymentServices {
     async createCheckoutSession(params: CreateChekoutSessionRequest) {
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
             mode: 'payment',
+            payment_method_types: ['card'],
             customer_email: params.userEmail,
             line_items: [
                 {
@@ -25,7 +24,7 @@ export class StripePaymentServices implements IPaymentServices {
                 bookingId: params.bookingId,
             },
             success_url: params.successUrl,
-            cancel_url: params.cancelUrl,
+            cancel_url: params.cancelUrl
         })
 
         return {

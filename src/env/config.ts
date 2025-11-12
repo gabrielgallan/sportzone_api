@@ -7,7 +7,9 @@ const envSchema = z.object({
     DATABASE_URL: z.string(),
     LOCATIONIQ_API_KEY: z.string(),
     JWT_SECRET: z.string(),
-    STRIPE_SECRET_API_KEY: z.string()
+    STRIPE_SECRET_API_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
+    FRONT_END_URL: z.string().nullable()
 })
 
 const _env = envSchema.safeParse(process.env)

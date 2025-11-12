@@ -10,8 +10,8 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
     async create(data: Prisma.PaymentUncheckedCreateInput): Promise<Payment> {
         const payment = {
             id: data.id ?? randomUUID(),
-            method: null,
-            external_id: null,
+            method: data.method ?? null,
+            external_id: data.external_id ?? null,
             amount: new Decimal(data.amount.toString()),
             created_at: new Date(),
             validated_at: null,
