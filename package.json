@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "stripe": "stripe listen --forward-to localhost:3000/stripe/webhook",
     "build": "tsup src --out-dir build",
     "start": "node build/server.cjs",
     "test:unit": "vitest run --project unit",

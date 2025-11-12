@@ -8,6 +8,7 @@ import { SportCourtDateAlreadyOccupied } from "root/src/use-cases/errors/sport-c
 import { makeRegisterPaymentUseCase } from "root/src/use-cases/factories/make-register-payment-use-case.ts";
 import { SportCourtUnavailable } from "root/src/use-cases/errors/sport-court-unavailable.ts";
 import { SportCourtDateBlocked } from "root/src/use-cases/errors/sport-court-date-blocked.ts";
+import { makeCreateCheckoutSessionUseCase } from "root/src/use-cases/factories/make-create-checkout-session-use-case.ts";
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
@@ -25,6 +26,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     try {
         const createBookingUseCase = makeCreateBookingUseCase()
         const registerPaymentUseCase = makeRegisterPaymentUseCase()
+        const createCheckoutSessionUseCase = makeCreateCheckoutSessionUseCase()
 
         const { booking } = await createBookingUseCase.execute({
             userId: request.user.sub,
@@ -33,8 +35,12 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
             endTime
         })
 
-        const { sessionUrl } = await registerPaymentUseCase.execute({
+        const { payment } = await registerPaymentUseCase.execute({
             booking
+        })
+
+        const { sessionUrl } = await createCheckoutSessionUseCase.execute({
+            payment
         })
 
         return reply.status(201).send({ sessionUrl })

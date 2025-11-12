@@ -6,7 +6,7 @@ import { InMemoryPaymentsRepository } from '../repositories/in-memory/in-memory-
 import { RegisterPaymentUseCase } from './register-payment.ts'
 import type { UsersRepository } from '../repositories/users-repository.ts'
 import type { SportCourtsRepository } from '../repositories/sport-courts-repository.ts'
-import type { IPaymentServices } from '../payments/payments-services.ts'
+import type { IPaymentServices } from './externals/payments-services/payments-services.ts'
 import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository.ts'
 import { InMemorySportCourtsRepository } from '../repositories/in-memory/in-memory-sport-courts-repository.ts'
 import { StripePaymentServices } from '../payments/stripe/stripe-payment-services.ts'

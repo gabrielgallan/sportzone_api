@@ -7,7 +7,7 @@ import { userRoutes } from './infra/http/controllers/users/routes.ts'
 import { courtRoutes } from './infra/http/controllers/courts/routes.ts'
 import { bookingsRoutes } from './infra/http/controllers/bookings/routes.ts'
 import fastifyRawBody from 'fastify-raw-body'
-import { paymentRoutes } from './infra/http/controllers/payments/routes.ts'
+import { webhookRoutes } from './infra/http/controllers/webhook/routes.ts'
 
 const app = fastify()
 
@@ -33,7 +33,8 @@ app.register(fastifyRawBody, {
 app.register(userRoutes)
 app.register(courtRoutes)
 app.register(bookingsRoutes)
-app.register(paymentRoutes)
+
+app.register(webhookRoutes)
 
 app.setErrorHandler((error, request, reply) => {
     if (error instanceof ZodError) {

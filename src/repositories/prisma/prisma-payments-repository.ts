@@ -1,5 +1,4 @@
-import { Prisma, type CourtBlockedDate, type Payment } from "@prisma/client"
-import type { CourtBlockedDatesRepository } from "../court-blocked-dates-repository.ts"
+import { Prisma, type Payment } from "@prisma/client"
 import prisma from "root/src/lib/prisma.ts"
 import type { PaymentsRepository } from "../payments-repository.ts"
 
@@ -13,9 +12,9 @@ export class PrismaPaymentsRepository implements PaymentsRepository {
         return payment
     }
     
-    async findByExternalId(externalId: string) {
-        const payment = await prisma.payment.findFirst({
-            where: { external_id: externalId }
+    async findById(id: string) {
+        const payment = await prisma.payment.findUnique({
+            where: { id }
         })
 
         return payment

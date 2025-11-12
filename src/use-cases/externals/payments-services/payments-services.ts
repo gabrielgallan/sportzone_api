@@ -14,6 +14,6 @@ interface CreateChekoutSessionResponse {
     sessionUrl: string
 }
 
-export interface IPaymentServices {
+export interface PaymentServices {
     createCheckoutSession(params: CreateChekoutSessionRequest): Promise<CreateChekoutSessionResponse>
 }

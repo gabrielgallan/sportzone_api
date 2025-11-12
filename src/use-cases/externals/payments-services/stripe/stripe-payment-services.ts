@@ -1,7 +1,9 @@
 import stripe from "root/src/lib/stripe.ts";
-import type { CreateChekoutSessionRequest, IPaymentServices } from "../payments-services.ts";
+import type { CreateChekoutSessionRequest, PaymentServices } from "../payments-services.ts";
 
-export class StripePaymentServices implements IPaymentServices {
+const timeLimitForExpirationInMinutes = 35
+
+export class StripePaymentServices implements PaymentServices {
     async createCheckoutSession(params: CreateChekoutSessionRequest) {
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',
@@ -24,7 +26,8 @@ export class StripePaymentServices implements IPaymentServices {
                 bookingId: params.bookingId,
             },
             success_url: params.successUrl,
-            cancel_url: params.cancelUrl
+            cancel_url: params.cancelUrl,
+            expires_at: Math.floor(Date.now() / 1000) + timeLimitForExpirationInMinutes * 60,
         })
 
         return {

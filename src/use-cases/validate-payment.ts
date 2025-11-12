@@ -4,7 +4,7 @@ import { ResourceNotFound } from "./errors/resource-not-found.ts"
 import { PaymentAlreadyPaid } from "./errors/payment-already-paid.ts"
 
 interface ValidatePaymentUseCaseRequest {
-    paymentExternalId: string,
+    paymentId: string,
 }
 
 interface ValidatePaymentUseCaseResponse {
@@ -17,10 +17,10 @@ export class ValidatePaymentUseCase {
     ) {}
 
     async execute({
-        paymentExternalId
+        paymentId
     }: ValidatePaymentUseCaseRequest): Promise<ValidatePaymentUseCaseResponse>
     {
-        const paymentExists = await this.paymentsRepository.findByExternalId(paymentExternalId)
+        const paymentExists = await this.paymentsRepository.findById(paymentId)
 
         if (!paymentExists) {
             throw new ResourceNotFound()

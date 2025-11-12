@@ -27,6 +27,7 @@ model User {
   created_at    DateTime     @default(now())
   bookings      Booking[]
   sport_courts  SportCourt[]
+  payments      Payment[]
 
   @@map("users")
 }
@@ -64,8 +65,14 @@ model Payment {
   amount       Decimal
   created_at   DateTime  @default(now())
   validated_at DateTime?
-  booking      Booking   @relation(fields: [booking_id], references: [id])
-  booking_id   String    @unique
+  currency     String    @default("brl")
+  description  String    @default("Reserva de Quadra")
+
+  user       User   @relation(fields: [user_email], references: [email])
+  user_email String
+
+  booking    Booking @relation(fields: [booking_id], references: [id])
+  booking_id String  @unique
 
   @@map("payments")
 }

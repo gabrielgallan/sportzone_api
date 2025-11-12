@@ -48,7 +48,7 @@ export async function webhook(
                 })
 
                 await validatePaymentUseCase.execute({
-                    paymentExternalId: session.id
+                    paymentId,
                 })
 
                 return reply.status(204).send()

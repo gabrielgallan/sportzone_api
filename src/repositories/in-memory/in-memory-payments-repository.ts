@@ -13,8 +13,11 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
             method: data.method ?? null,
             external_id: data.external_id ?? null,
             amount: new Decimal(data.amount.toString()),
+            description: data.description ?? 'Default Payment',
+            currency: data.currency ?? 'brl',
             created_at: new Date(),
             validated_at: null,
+            user_email: data.user_email,
             booking_id: data.booking_id ?? randomUUID()
         }
 
@@ -23,8 +26,8 @@ export class InMemoryPaymentsRepository implements PaymentsRepository {
         return payment
     }
 
-    async findByExternalId(externalId: string): Promise<Payment | null> {
-        const payment = this.items.find(pay => pay.external_id === externalId)
+    async findById(id: string): Promise<Payment | null> {
+        const payment = this.items.find(pay => pay.id === id)
 
         if (!payment) return null
 

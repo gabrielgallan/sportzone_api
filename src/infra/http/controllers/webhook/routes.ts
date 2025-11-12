@@ -2,7 +2,7 @@ import type { FastifyInstance } from "fastify"
 import { webhook } from "./webhook.ts"
 
 
-export async function paymentRoutes(app: FastifyInstance) {
+export async function webhookRoutes(app: FastifyInstance) {
 
     app.route({
         method: 'POST',
