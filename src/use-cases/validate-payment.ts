@@ -1,5 +1,7 @@
 import { type Payment } from "@prisma/client"
 import type { PaymentsRepository } from "../repositories/payments-repository.ts"
+import { ResourceNotFound } from "./errors/resource-not-found.ts"
+import { PaymentAlreadyPaid } from "./errors/payment-already-paid.ts"
 
 interface ValidatePaymentUseCaseRequest {
     paymentExternalId: string,
@@ -21,11 +23,11 @@ export class ValidatePaymentUseCase {
         const paymentExists = await this.paymentsRepository.findByExternalId(paymentExternalId)
 
         if (!paymentExists) {
-            throw new Error()
+            throw new ResourceNotFound()
         }
         
         if (paymentExists.validated_at) {
-            throw new Error()
+            throw new PaymentAlreadyPaid()
         }
 
         const payment = await this.paymentsRepository.save({

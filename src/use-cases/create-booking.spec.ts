@@ -5,11 +5,13 @@ import { CreateBookingUseCase } from './create-booking.ts'
 import { randomUUID } from 'crypto'
 import type { SportCourtsRepository } from 'root/src/repositories/sport-courts-repository.ts'
 import { InMemorySportCourtsRepository } from 'root/src/repositories/in-memory/in-memory-sport-courts-repository.ts'
-import { SportCourtDateUnavaliable } from './errors/sport-courts-date-unavaliable.ts'
+import { SportCourtDateAlreadyOccupied } from './errors/sport-courts-date-already-occupied.ts'
 import { MaxBookingsPerDayError } from './errors/max-bookings-per-day-error.ts'
 import { InvalidTimestampBookingInterval } from './errors/invalid-timestamp-booking-interval.ts'
 import type { CourtBlockedDatesRepository } from '../repositories/court-blocked-dates-repository.ts'
 import { InMemoryCourtBlockedDatesRepository } from '../repositories/in-memory/in-memory-court-blocked-dates-repository.ts'
+import { SportCourtUnavailable } from './errors/sport-court-unavailable.ts'
+import { SportCourtDateBlocked } from './errors/sport-court-date-blocked.ts'
 
 let bookingRepository: BookingsRepository
 let sportCourtsRepository: SportCourtsRepository
@@ -151,7 +153,7 @@ describe('Create Booking Use Case', () => {
                 startTime: new Date(2025, 0, 16, 13, 0, 0),
                 endTime: new Date(2025, 0, 16, 16, 0, 0),
             })
-        ).rejects.toBeInstanceOf(SportCourtDateUnavaliable)
+        ).rejects.toBeInstanceOf(SportCourtDateAlreadyOccupied)
     })
 
     it("should not be able to create a booking with less than 2 hours' notice.", async () => {
@@ -226,7 +228,7 @@ describe('Create Booking Use Case', () => {
                 startTime: new Date(2025, 0, 13, 13, 0, 0),
                 endTime: new Date(2025, 0, 13, 16, 0, 0),
             })
-        ).rejects.toBeInstanceOf(SportCourtDateUnavaliable)
+        ).rejects.toBeInstanceOf(SportCourtDateBlocked)
     })
 
     it("should not be able to create a booking if court its unavaliable", async () => {
@@ -254,6 +256,6 @@ describe('Create Booking Use Case', () => {
                 startTime: new Date(2025, 0, 13, 13, 0, 0),
                 endTime: new Date(2025, 0, 13, 16, 0, 0),
             })
-        ).rejects.toBeInstanceOf(SportCourtDateUnavaliable)
+        ).rejects.toBeInstanceOf(SportCourtUnavailable)
     })
 })
