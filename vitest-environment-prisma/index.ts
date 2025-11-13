@@ -16,6 +16,7 @@ function generateDatabaseURL(schema: string) {
     return url.toString()
 }
 
+
 const prisma = new PrismaClient()
 
 export default <Environment>{
@@ -24,8 +25,9 @@ export default <Environment>{
     async setup() {
         const schema = randomUUID()
         const databaseURL = generateDatabaseURL(schema)
-
+        
         process.env.DATABASE_URL = databaseURL
+
         
         execSync('npx prisma migrate deploy')
 

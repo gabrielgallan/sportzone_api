@@ -69,7 +69,7 @@ describe('Confirm a booking register Use Case', () => {
         ).rejects.toBeInstanceOf(InvalidBookingStatus)
     })
 
-    it('should not be able to confirm a booking after 20 minutes of your creation', async () => {
+    it('should not be able to confirm a booking after 35 minutes of your creation', async () => {
         vi.setSystemTime(new Date(2025, 0, 13, 10, 0))
 
         const createdBooking = await bookingRepository.create({
@@ -80,9 +80,9 @@ describe('Confirm a booking register Use Case', () => {
             price: 60
         })
 
-        const twentyOneMinutesInMs = 1000 * 60 * 21
+        const thirtySixMinutesInMs = 1000 * 60 * 36
 
-        vi.advanceTimersByTime(twentyOneMinutesInMs)
+        vi.advanceTimersByTime(thirtySixMinutesInMs)
         
         await expect(() => 
             sut.execute({

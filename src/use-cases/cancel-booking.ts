@@ -25,7 +25,7 @@ export class CancelBookingUseCase {
             throw new ResourceNotFound()
         }
 
-        if (booking.status !== BookingStatus.CONFIRMED) {
+        if (booking.status === BookingStatus.CANCELLED) {
             throw new InvalidBookingStatus()
         }
 
