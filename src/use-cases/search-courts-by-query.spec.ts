@@ -2,9 +2,9 @@ import { it, describe, expect, beforeEach } from 'vitest'
 import type { SportCourtsRepository } from '../repositories/sport-courts-repository.ts'
 import { InMemorySportCourtsRepository } from '../repositories/in-memory/in-memory-sport-courts-repository.ts'
 import { SearchCourtsByQueryUseCase } from './search-courts-by-query.ts'
-import type { GeocodingServices } from '../infra/external/geocoding-services.ts'
-import { LocationIqGeocodingServices } from '../infra/external/locationiq/locationiq-geocoding-services.ts'
-import { AddressNotFound } from '../infra/external/locationiq/errors/address-not-found.ts'
+import type { GeocodingServices } from '../infra/geocoding/geocoding-services.ts'
+import { LocationIqGeocodingServices } from '../infra/geocoding/locationiq/locationiq-geocoding-services.ts'
+import { AddressNotFound } from '../infra/geocoding/locationiq/errors/address-not-found.ts'
 
 let sportCourtsRepository: SportCourtsRepository
 let geocodingServices: GeocodingServices

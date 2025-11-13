@@ -1,6 +1,6 @@
 import { PrismaSportCourtsRepository } from "root/src/repositories/prisma/prisma-sport-court-repository.ts"
 import { SearchCourtsByQueryUseCase } from "../search-courts-by-query.ts"
-import { LocationIqGeocodingServices } from "root/src/infra/external/locationiq/locationiq-geocoding-services.ts"
+import { LocationIqGeocodingServices } from "root/src/infra/geocoding/locationiq/locationiq-geocoding-services.ts"
 
 
 export function makeSearchCourtsByQueryUseCase() {

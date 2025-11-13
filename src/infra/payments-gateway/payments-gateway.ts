@@ -9,11 +9,11 @@ export interface CreateChekoutSessionRequest {
     description: string
 }
 
-interface CreateChekoutSessionResponse {
+export interface CreateChekoutSessionResponse {
     sessionId: string
     sessionUrl: string
 }
 
-export interface PaymentServices {
+export interface PaymentGateway {
     createCheckoutSession(params: CreateChekoutSessionRequest): Promise<CreateChekoutSessionResponse>
 }
