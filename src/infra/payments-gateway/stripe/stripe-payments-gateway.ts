@@ -1,9 +1,9 @@
 import stripe from "root/src/lib/stripe.ts";
-import type { CreateChekoutSessionRequest, PaymentServices } from "../payments-services.ts";
+import type { CreateChekoutSessionRequest, PaymentGateway } from "../payments-gateway.ts";
 
 const timeLimitForExpirationInMinutes = 35
 
-export class StripePaymentServices implements PaymentServices {
+export class StripePaymentsGateway implements PaymentGateway {
     async createCheckoutSession(params: CreateChekoutSessionRequest) {
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',

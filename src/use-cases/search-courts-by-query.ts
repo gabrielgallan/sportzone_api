@@ -1,6 +1,6 @@
 import type { SportCourt } from "@prisma/client"
 import type { SportCourtsRepository } from "../repositories/sport-courts-repository.ts"
-import type { GeocodingServices } from "../infra/external/geocoding-services.ts"
+import type { GeocodingServices } from "../infra/geocoding/geocoding-services.ts"
 
 interface SearchCourtsByQueryUseCaseRequest {
     routeName: string,

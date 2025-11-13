@@ -2,25 +2,25 @@ import { it, describe, expect, beforeEach, vi } from 'vitest'
 import { CreateCheckoutSessionUseCase } from './create-checkout-session.ts'
 import { InMemoryPaymentsRepository } from '../repositories/in-memory/in-memory-payments-repository.ts'
 import type { PaymentsRepository } from '../repositories/payments-repository.ts'
-import type { PaymentServices } from './externals/payments-services/payments-services.ts'
+import type { PaymentGateway } from '@/infra/payments-gateway/payments-gateway.ts'
 import { makePayment } from '../utils/test/unit/factories/make-payment.ts'
 
 let paymentsRepository: PaymentsRepository
-let paymentServices: PaymentServices
+let paymentsGateway: PaymentGateway 
 let sut: CreateCheckoutSessionUseCase
 
 describe('Create a checkout session Use Case', () => {
     beforeEach(() => {
         paymentsRepository = new InMemoryPaymentsRepository()
-        paymentServices = {
+        paymentsGateway = {
             createCheckoutSession: vi.fn().mockResolvedValue({
                 sessionId: 'mock-session-id',
                 sessionUrl: 'https://mock-session-url',
             }),
         }
 
-        sut = new CreateCheckoutSessionUseCase(
-            paymentServices,
+        sut = new CreateCheckoutSessionUseCase (
+            paymentsGateway,
             paymentsRepository,
         )
     })

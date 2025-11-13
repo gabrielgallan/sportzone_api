@@ -1,5 +1,5 @@
 import type { Payment } from "@prisma/client"
-import type { PaymentServices } from "./externals/payments-services/payments-services.ts"
+import type { PaymentGateway } from "@/infra/payments-gateway/payments-gateway.ts"
 import env from "../env/config.ts"
 import type { PaymentsRepository } from "../repositories/payments-repository.ts"
 
@@ -14,7 +14,7 @@ interface CreateCheckoutSessionUseCaseResponse {
 
 export class CreateCheckoutSessionUseCase {
     constructor(
-        private paymentServices: PaymentServices,
+        private paymentsGateway: PaymentGateway,
         private paymentsRepository: PaymentsRepository
     ) { }
 
@@ -26,7 +26,7 @@ export class CreateCheckoutSessionUseCase {
             throw new Error('Session already exists!')
         }
 
-        const { sessionId, sessionUrl } = await this.paymentServices.createCheckoutSession({
+        const { sessionId, sessionUrl } = await this.paymentsGateway.createCheckoutSession({
             paymentId: payment.id,
             bookingId: payment.booking_id,
             amount: Number(payment.amount),

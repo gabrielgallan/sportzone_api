@@ -1,8 +1,8 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 import { makeSearchCourtsByQueryUseCase } from "root/src/use-cases/factories/make-search-courts-by-query-use-case.ts";
-import { AddressNotFound } from "root/src/infra/external/locationiq/errors/address-not-found.ts";
-import { LocationIqServerError } from "root/src/infra/external/locationiq/errors/locationiq-server-error.ts";
+import { AddressNotFound } from "root/src/infra/geocoding/locationiq/errors/address-not-found.ts";
+import { LocationIqServerError } from "root/src/infra/geocoding/locationiq/errors/locationiq-server-error.ts";
 
 export async function query(request: FastifyRequest, reply: FastifyReply) {
     const querySchema = z.object({
