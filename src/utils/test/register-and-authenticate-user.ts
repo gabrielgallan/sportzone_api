@@ -24,5 +24,6 @@ export async function registerAndAuthenticateUser(app: FastifyInstance, isAdmin 
 
     return {
         token,
+        user
     }
 }

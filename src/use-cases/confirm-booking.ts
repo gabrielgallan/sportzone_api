@@ -30,7 +30,7 @@ export class ConfirmBookingUseCase {
             'minutes'
         )
 
-        if (distanceInMinutesFromBookingCreation > 20) {
+        if (distanceInMinutesFromBookingCreation > 35) {
             booking.status = BookingStatus.ERROR
 
             await this.bookingRepository.save(booking)

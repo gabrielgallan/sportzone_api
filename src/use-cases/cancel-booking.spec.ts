@@ -70,7 +70,7 @@ describe('Cancel a booking register Use Case', () => {
         ).rejects.toBeInstanceOf(LateBookingCancellation)
     })
 
-    it('should not be able to cancel a booking with status different from CONFIRMED.', async () => {
+    it('should not be able to cancel a booking already cancelled.', async () => {
         vi.setSystemTime(new Date(2025, 0, 13, 10, 0))
 
         const createdBooking = await bookingRepository.create({
@@ -78,10 +78,11 @@ describe('Cancel a booking register Use Case', () => {
             sportCourt_id: 'court-01',
             start_time: new Date(2025, 0, 13, 14, 0, 0),
             end_time: new Date(2025, 0, 13, 16, 0, 0),
-            price: 60
+            price: 60,
+            status: 'CANCELLED'
         })
 
-        vi.setSystemTime(new Date(2025, 0, 13, 13, 30))
+        vi.setSystemTime(new Date(2025, 0, 13, 11, 30))
 
         await expect(() =>
             sut.execute({
