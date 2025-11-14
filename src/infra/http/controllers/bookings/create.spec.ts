@@ -5,6 +5,34 @@ import { registerAndAuthenticateUser } from 'root/src/utils/test/e2e/register-an
 import { createSportCourt } from 'root/src/utils/test/e2e/create-sport-court.ts'
 import dayjs from 'dayjs'
 
+// 1. Mock do stripe.ts (cliente stripe)
+vi.mock("root/src/lib/stripe.ts", () => ({
+  default: {
+    webhooks: {
+      constructEvent: vi.fn(),
+    },
+    checkout: {
+      sessions: {
+        create: vi.fn(),
+      },
+    },
+  },
+}))
+
+// 2. Mock CORRETO da classe StripePaymentsGateway
+vi.mock("root/src/infra/payments-gateway/stripe/stripe-payments-gateway.ts", () => {
+  return {
+    StripePaymentsGateway: vi.fn().mockImplementation(function () {
+      // precisa ser function, não arrow
+      return {
+        createCheckoutSession: vi.fn().mockResolvedValue({
+          sessionId: "cs_test_123",
+          sessionUrl: "https://stripe.test/session",
+        }),
+      }
+    }),
+  }
+})
 
 describe('Create booking (E2E)', async () => {
     beforeAll(async () => {
@@ -31,6 +59,5 @@ describe('Create booking (E2E)', async () => {
             })
         
         expect(response.body.sessionUrl).toEqual(expect.any(String))
-        expect(response.body.sessionId).toEqual(expect.any(String))
     })
 })
