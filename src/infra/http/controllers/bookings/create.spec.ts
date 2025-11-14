@@ -1,9 +1,4 @@
-import request from 'supertest'
-import app from 'root/src/app.ts'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
-import { registerAndAuthenticateUser } from 'root/src/utils/test/e2e/register-and-authenticate-user.ts'
-import { createSportCourt } from 'root/src/utils/test/e2e/create-sport-court.ts'
-import dayjs from 'dayjs'
 
 vi.mock("root/src/lib/stripe.ts", () => {
   return {
@@ -35,6 +30,13 @@ vi.mock(
     }
   }
 )
+
+import request from 'supertest'
+import app from 'root/src/app.ts'
+import { registerAndAuthenticateUser } from 'root/src/utils/test/e2e/register-and-authenticate-user.ts'
+import { createSportCourt } from 'root/src/utils/test/e2e/create-sport-court.ts'
+import dayjs from 'dayjs'
+
 
 describe('Create booking (E2E)', async () => {
     beforeAll(async () => {
