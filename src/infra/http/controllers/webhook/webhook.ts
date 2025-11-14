@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import env from "root/src/env/config.ts";
 import stripe from "root/src/lib/stripe.ts";
 import { makeConfirmBookingUseCase } from "root/src/use-cases/factories/make-confirm-booking-use-case.ts";
+import { makeThrowErrorOnBookingUseCase } from "root/src/use-cases/factories/make-throw-error-on-booing-use-case.ts";
 import { makeValidatePaymentUseCase } from "root/src/use-cases/factories/make-validate-payment-use-case.ts";
 import type Stripe from "stripe";
 import z from "zod";
@@ -28,40 +29,52 @@ export async function webhook(
         return reply.status(400).send(`Webhook Error`)
     }
 
+    const session = event.data.object as Stripe.Checkout.Session
+
+    const metadataSchema = z.object({
+        bookingId: z.string(),
+        paymentId: z.string()
+    })
+
+    const { bookingId, paymentId } = metadataSchema.parse(session.metadata)
+
+    const confirmBookingUseCase = makeConfirmBookingUseCase()
+    const validatePaymentUseCase = makeValidatePaymentUseCase()
+    const throwErrorOnBookingUseCase = makeThrowErrorOnBookingUseCase()
+
     switch (event.type) {
         case 'checkout.session.completed':
-            const session = event.data.object as Stripe.Checkout.Session
-
-            const metadataSchema = z.object({
-                bookingId: z.string(),
-                paymentId: z.string()
+            await validatePaymentUseCase.execute({
+                paymentId,
             })
 
-            const { bookingId, paymentId } = metadataSchema.parse(session.metadata)
+            await confirmBookingUseCase.execute({
+                bookingId,
+            })
 
-            try {
-                const confirmBookingUseCase = makeConfirmBookingUseCase()
-                const validatePaymentUseCase = makeValidatePaymentUseCase()
-
-                await confirmBookingUseCase.execute({
-                    bookingId,
-                })
-
-                await validatePaymentUseCase.execute({
-                    paymentId,
-                })
-
-                return reply.status(204).send()
-            } catch (err) {
-                throw err
-            }
+            return reply.status(200).send()
         case 'checkout.session.async_payment_failed':
-            return
+            await throwErrorOnBookingUseCase.execute({
+                bookingId
+            })
+
+            return reply.status(200).send()
         case 'checkout.session.expired':
-            return
+            await throwErrorOnBookingUseCase.execute({
+                bookingId
+            })
+            
+            return reply.status(200).send()
         case 'checkout.session.async_payment_succeeded':
-            return
+            await validatePaymentUseCase.execute({
+                paymentId,
+            })
+
+            await confirmBookingUseCase.execute({
+                bookingId,
+            })
+            return reply.status(200).send()
         default:
-            return
+            return reply.status(200).send()
     }
 }
