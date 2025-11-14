@@ -1,35 +1,33 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-vi.mock("root/src/lib/stripe.ts", () => {
-  return {
-    default: {
-      webhooks: {
-        constructEvent: vi.fn()
+// 1. Mock do stripe.ts (cliente stripe)
+vi.mock("root/src/lib/stripe.ts", () => ({
+  default: {
+    webhooks: {
+      constructEvent: vi.fn(),
+    },
+    checkout: {
+      sessions: {
+        create: vi.fn(),
       },
-      checkout: {
-        sessions: {
-          create: vi.fn()
-        }
+    },
+  },
+}))
+
+// 2. Mock CORRETO da classe StripePaymentsGateway
+vi.mock("root/src/infra/payments-gateway/stripe/stripe-payments-gateway.ts", () => {
+  return {
+    StripePaymentsGateway: vi.fn().mockImplementation(function () {
+      // precisa ser function, não arrow
+      return {
+        createCheckoutSession: vi.fn().mockResolvedValue({
+          sessionId: "cs_test_123",
+          sessionUrl: "https://stripe.test/session",
+        }),
       }
-    }
+    }),
   }
 })
-
-vi.mock(
-  "root/src/infra/payments-gateway/stripe/stripe-payments-gateway.ts",
-  () => {
-    return {
-      StripePaymentsGateway: vi.fn().mockImplementation(() => {
-        return {
-          createCheckoutSession: vi.fn().mockResolvedValue({
-            sessionId: "cs_test_123",
-            sessionUrl: "https://stripe.test/session"
-          })
-        }
-      })
-    }
-  }
-)
 
 import request from 'supertest'
 import app from 'root/src/app.ts'
