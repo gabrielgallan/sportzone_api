@@ -5,6 +5,21 @@ import { registerAndAuthenticateUser } from 'root/src/utils/test/e2e/register-an
 import { createSportCourt } from 'root/src/utils/test/e2e/create-sport-court.ts'
 import dayjs from 'dayjs'
 
+vi.mock("root/src/lib/stripe.ts", () => {
+  return {
+    default: {
+      webhooks: {
+        constructEvent: vi.fn()
+      },
+      checkout: {
+        sessions: {
+          create: vi.fn()
+        }
+      }
+    }
+  }
+})
+
 vi.mock(
   "root/src/infra/payments-gateway/stripe/stripe-payments-gateway.ts",
   () => {
