@@ -37,5 +37,6 @@
 - [ ] A reserva deve ser confirmada em até 15 minutos por uma API de pagamento;
 
 # To Remember
-- Create Sport court use case tests;
-- 
+- Fix use case payments services, tests
+- Fix payment metadata
+- Use case de create booking, chama use case

@@ -3,16 +3,15 @@ import type { PaymentGateway } from "@/infra/payments-gateway/payments-gateway.t
 import env from "../env/config.ts"
 import type { PaymentsRepository } from "../repositories/payments-repository.ts"
 
-interface CreateCheckoutSessionUseCaseRequest {
+interface CreateOrderSessionUseCaseRequest {
     payment: Payment,
 }
 
-interface CreateCheckoutSessionUseCaseResponse {
-    sessionId: string
-    sessionUrl: string
+interface CreateOrderSessionUseCaseResponse {
+    redirectUrl: string
 }
 
-export class CreateCheckoutSessionUseCase {
+export class CreateOrderSessionUseCase {
     constructor(
         private paymentsGateway: PaymentGateway,
         private paymentsRepository: PaymentsRepository
@@ -20,31 +19,30 @@ export class CreateCheckoutSessionUseCase {
 
     async execute({
         payment
-    }: CreateCheckoutSessionUseCaseRequest): Promise<CreateCheckoutSessionUseCaseResponse> 
+    }: CreateOrderSessionUseCaseRequest): Promise<CreateOrderSessionUseCaseResponse> 
     {
-        if (payment.external_id) {
+        if (payment.order_id) {
             throw new Error('Session already exists!')
         }
 
-        const { sessionId, sessionUrl } = await this.paymentsGateway.createCheckoutSession({
+        const { orderId, redirectUrl } = await this.paymentsGateway.createOrderSession({
             paymentId: payment.id,
             bookingId: payment.booking_id,
             amount: Number(payment.amount),
             currency: payment.currency,
             userEmail: payment.user_email,
-            successUrl: env.FRONT_END_URL + '/checkout/success',
-            cancelUrl: env.FRONT_END_URL + '/checkout/cancel',
-            description: payment.description
+            successUrl: env.FRONT_END_URL + '/order/success',
+            cancelUrl: env.FRONT_END_URL + '/order/cancel',
+            description: payment.description ?? ''
         })
 
         await this.paymentsRepository.save({
             ...payment,
-            external_id: sessionId
+            order_id: orderId,
         })
 
         return {
-            sessionId,
-            sessionUrl,
+            redirectUrl,
         }
     }
 }

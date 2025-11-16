@@ -1,4 +1,6 @@
-export interface CreateChekoutSessionRequest {
+import type { PaymentStatus } from "@prisma/client"
+
+export interface CreateOrderSessionRequest {
     paymentId: string
     bookingId: string
     amount: number
@@ -9,11 +11,20 @@ export interface CreateChekoutSessionRequest {
     description: string
 }
 
-export interface CreateChekoutSessionResponse {
-    sessionId: string
-    sessionUrl: string
+export interface CreateOrderSessionResponse {
+    orderId: string,
+    redirectUrl: string
+}
+
+export interface CreateRefundIntentResponse {
+    refundId: string,
+    status: string,
+    amount: number,
+    createdAt: Date,
 }
 
 export interface PaymentGateway {
-    createCheckoutSession(params: CreateChekoutSessionRequest): Promise<CreateChekoutSessionResponse>
+    createOrderSession(params: CreateOrderSessionRequest): Promise<CreateOrderSessionResponse>
+    checkPaymentStatus(externalPaymentId: string): Promise<PaymentStatus>
+    createRefund(externalPaymentId: string): Promise<CreateRefundIntentResponse>
 }

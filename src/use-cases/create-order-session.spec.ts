@@ -1,5 +1,5 @@
 import { it, describe, expect, beforeEach, vi } from 'vitest'
-import { CreateCheckoutSessionUseCase } from './create-checkout-session.ts'
+import { CreateCheckoutSessionUseCase } from './create-order-session.ts'
 import { InMemoryPaymentsRepository } from '../repositories/in-memory/in-memory-payments-repository.ts'
 import type { PaymentsRepository } from '../repositories/payments-repository.ts'
 import type { PaymentGateway } from '@/infra/payments-gateway/payments-gateway.ts'

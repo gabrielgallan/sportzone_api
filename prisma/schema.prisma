@@ -59,14 +59,16 @@ enum BookingStatus {
 }
 
 model Payment {
-  id           String    @id @default(uuid())
-  method       String?
-  external_id  String?
-  amount       Decimal
-  created_at   DateTime  @default(now())
-  validated_at DateTime?
-  currency     String    @default("brl")
-  description  String    @default("Reserva de Quadra")
+  id          String        @id @default(uuid())
+  external_id String?
+  order_id    String?
+  method      String?
+  amount      Decimal
+  status      PaymentStatus @default(PENDING)
+  updated_at  DateTime      @updatedAt
+  created_at  DateTime      @default(now())
+  currency    String        @default("brl")
+  description String?
 
   user       User   @relation(fields: [user_email], references: [email])
   user_email String
@@ -75,6 +77,13 @@ model Payment {
   booking_id String  @unique
 
   @@map("payments")
+}
+
+enum PaymentStatus {
+  PAID
+  PENDING
+  FAILED
+  REFUNDED
 }
 
 model SportCourt {

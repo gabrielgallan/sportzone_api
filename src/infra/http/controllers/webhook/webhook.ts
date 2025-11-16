@@ -42,6 +42,10 @@ export async function webhook(
     const validatePaymentUseCase = makeValidatePaymentUseCase()
     const throwErrorOnBookingUseCase = makeThrowErrorOnBookingUseCase()
 
+    // "charge.refunded"
+    // "charge.refund.updated"
+    // "refund.updated"
+
     switch (event.type) {
         case 'checkout.session.completed':
             await validatePaymentUseCase.execute({
@@ -63,7 +67,7 @@ export async function webhook(
             await throwErrorOnBookingUseCase.execute({
                 bookingId
             })
-            
+
             return reply.status(200).send()
         case 'checkout.session.async_payment_succeeded':
             await validatePaymentUseCase.execute({
